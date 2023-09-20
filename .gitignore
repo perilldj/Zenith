@@ -1,0 +1,6 @@
+.vscode/
+build/
+CIFAR10/
+Digits-MNIST/
+Fashion-MNIST/
+pybind11/
