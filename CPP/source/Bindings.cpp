@@ -1,11 +1,18 @@
 #include <pybind11/pybind11.h>
 #include <pybind11/stl.h>
-#include "../header/Test.h"
+#include "../header/Matrix.h"
 
 namespace py = pybind11;
 
 PYBIND11_MODULE(Zenith, handle) {
 
-    handle.def("Bruh",  &Test::Bruh);
+    py::class_<Matrix> ( handle, "Matrix" )
+
+        .def(py::init<int, int>())
+
+        .def("get", &Matrix::Get)
+        .def("set", &Matrix::Set)
+
+    ;
 
 }
