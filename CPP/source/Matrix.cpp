@@ -149,9 +149,9 @@ void Matrix::Product(Matrix &mat1, Matrix &mat2, Matrix &out) {
         return;
     }
     float result = 0.0f;
-    for(int i = 0; i < mat1.col; i++) {
-        for(int j = 0; j < mat2.row; j++) {
-            for(int k = 0; k < mat1.row; j++) {
+    for(int i = 0; i < mat1.row; i++) {
+        for(int j = 0; j < mat2.col; j++) {
+            for(int k = 0; k < mat1.row; k++) {
                 result += mat1.Get(i, k) * mat2.Get(k, j);
             }
             out.Set(i, j, result);

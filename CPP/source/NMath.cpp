@@ -40,7 +40,7 @@ void NMath::InitializeUniformWeights(EInitialization initializer, Matrix &mat) {
 void NMath::InitializeNormalWeights(EInitialization initializer, Matrix &mat) {
     float stdDev = CalculateInitializerValue(initializer, mat.GetCol(), mat.GetRow());
     for(int i = 0; i < mat.GetRow(); i++)
-        for(int j = 0; j < mat.GetRow(); j++)
+        for(int j = 0; j < mat.GetCol(); j++)
             mat.Set(i, j, RandomNormalFloat(0.0f, stdDev));
 }
 
@@ -80,7 +80,7 @@ float NMath::CalculateInitializerValue(EInitialization initializer, int incoming
         return std::sqrt(2.0f / (float) incomingConnections);
 
     case EInitialization::Xavier :
-        return std::sqrt(6.0f / ((float)incomingConnections + (float)outgoingConnections));
+        return std::sqrt(6.0f / ((float) incomingConnections + (float) outgoingConnections));
 
     default:
         return 1.0f;

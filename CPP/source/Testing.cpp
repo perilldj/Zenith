@@ -2,16 +2,14 @@
 
 void Testing::RunTest() {
     
-    auto mat = Matrix::CreateMatrix(10, 10);
-    int val = 0;
-    for(int i = 0; i < 10; i++) {
-        for(int j = 0; j < 10; j++) {
-            mat->Set(i, j, val);
-            val++;
-        }
-    }
-
-    auto mat2 = Matrix::C_Transpose(*mat.get());
-    std::cout << "A" << std::endl;
+    std::shared_ptr<Matrix> inputs = Matrix::CreateMatrix(100, 1);
+    std::shared_ptr<Matrix> weights = Matrix::CreateMatrix(10, 100);
+    std::shared_ptr<Matrix> biases = Matrix::CreateMatrix(10, 1);
+    std::shared_ptr<Matrix> output = Matrix::C_EmptyProductMatrix(*weights.get(), *inputs.get());
+    std::shared_ptr<Matrix> output2 = Matrix::C_EmptyProductMatrix(*weights.get(), *inputs.get());
+    NMath::InitializeWeights(EInitialization::Random, EDistribution::Normal, *weights.get());
+    Matrix::Product(*weights.get(), *inputs.get(), *output.get());
+    Matrix::Add(*output.get(), *biases.get(), *output2.get());
+    std::cout << "AA" << std::endl;
 
 }

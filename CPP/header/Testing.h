@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../header/Matrix.h"
+#include "../header/NMath.h"
 
 class Testing {
 
