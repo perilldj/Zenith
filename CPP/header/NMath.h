@@ -1,5 +1,8 @@
 #pragma once
 
+#include <cmath>
+#include <random>
+#include <algorithm>
 #include "../header/Matrix.h"
 
 enum EInitialization {
@@ -58,10 +61,12 @@ private:
     static void InitializeUniformWeights(EInitialization initializer, Matrix &mat);
     static void InitializeNormalWeights(EInitialization initializer, Matrix &mat);
 
+    static float CalculateInitializerValue(EInitialization initializer, int incomingConnections, int outgoingConnections);
+
     static std::random_device rd;
     static std::mt19937 u_gen;
     static std::mt19937 n_gen;
     static std::uniform_real_distribution<float> u_dis;
     static std::normal_distribution<float> n_dis;
 
-}
+};

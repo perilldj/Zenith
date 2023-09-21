@@ -26,7 +26,7 @@ void NMath::InitializeWeights(EInitialization initializer, EDistribution distrib
 */
 
 void NMath::InitializeUniformWeights(EInitialization initializer, Matrix &mat) {
-    float bounds = CalculateInitializerValue(initializer, mat.col, mat.row);
+    float bounds = CalculateInitializerValue(initializer, mat.GetCol(), mat.GetRow());
     for(int i = 0; i < mat.GetRow(); i++)
         for(int j = 0; j < mat.GetCol(); j++)
             mat.Set(i, j, RandomUniformFloat(-bounds, bounds));
@@ -38,7 +38,7 @@ void NMath::InitializeUniformWeights(EInitialization initializer, Matrix &mat) {
 */
 
 void NMath::InitializeNormalWeights(EInitialization initializer, Matrix &mat) {
-    float stdDev = CalculateInitializerValue(initializer, mat.col, mat.row);
+    float stdDev = CalculateInitializerValue(initializer, mat.GetCol(), mat.GetRow());
     for(int i = 0; i < mat.GetRow(); i++)
         for(int j = 0; j < mat.GetRow(); j++)
             mat.Set(i, j, RandomNormalFloat(0.0f, stdDev));
