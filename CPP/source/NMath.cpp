@@ -88,3 +88,28 @@ float NMath::CalculateInitializerValue(EInitialization initializer, int incoming
     }
 
 }
+
+/*
+    void NMath::PrintProgressBar(float progress, float total, int width);
+    Description: Print progress bar to current line, print a \n when done with the progress bar.
+*/
+
+void NMath::PrintProgressBar(float progress, float total, int width) {
+
+    float ratio = progress / total;
+    int barWidth = (int)(ratio * width);
+
+    std::cout << "[";
+    for (int i = 0; i < width; i++) {
+        if (i < barWidth)
+            std::cout << "=";
+        else if (i == barWidth)
+            std::cout << ">";
+        else
+            std::cout << " ";
+    }
+
+    std::cout << "] " << (int)(ratio * 100.0) << "%\r";
+    std::cout.flush();
+
+}

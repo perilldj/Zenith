@@ -63,6 +63,8 @@ private:
 
     static float CalculateInitializerValue(EInitialization initializer, int incomingConnections, int outgoingConnections);
 
+    static void PrintProgressBar(float progress, float total, int width);
+
     static std::random_device rd;
     static std::mt19937 u_gen;
     static std::mt19937 n_gen;
