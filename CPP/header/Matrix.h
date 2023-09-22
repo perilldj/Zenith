@@ -2,6 +2,7 @@
 #include <vector>
 #include <iostream>
 #include <memory>
+#include <limits>
 
 class Matrix {
 
@@ -15,6 +16,7 @@ public:
     void Set(int row, int col, float value);
 
     void Fill(float val);
+    float MaxElement();
 
     inline float GetRow() { return row; }
     inline float GetCol() { return col; }

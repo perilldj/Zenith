@@ -57,6 +57,15 @@ void Matrix::Fill(float val) {
         std::fill(arr[i].begin(), arr[i].end(), val);
 }
 
+float Matrix::MaxElement() {
+    float max = Get(0, 0);
+    for(int i = 0; i < GetRow(); i++)
+        for(int j = 0; j < GetCol(); j++)
+            if(Get(i, j) > max)
+                max = Get(i, j);
+    return max;
+}
+
 /*
     void Matrix::Scale(float s, Matrix &mat)
     Description: Scales the provided matrix by the a scalar.

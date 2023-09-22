@@ -45,7 +45,9 @@ class NMath {
 
 public:
 
-    //static void Activation();
+    static void EvaluateFunctionOverMatrix(float (*func)(const float&), Matrix &mat, Matrix &out);
+
+    static void Activation(EActivation activation, Matrix &mat, Matrix &out);
     //static void ActivationDerivative();
 
     //static void Cost();

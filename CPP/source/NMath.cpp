@@ -7,6 +7,63 @@ std::mt19937 NMath::n_gen(NMath::rd());
 std::uniform_real_distribution<float> NMath::u_dis(0.0f, 1.0f);
 std::normal_distribution<float> NMath::n_dis(0.0f, 1.0f);
 
+void NMath::EvaluateFunctionOverMatrix(float (*func)(const float&), Matrix &mat, Matrix &out) {
+    for(int i = 0; i < mat.GetRow(); i++)
+        for(int j = 0; j < mat.GetCol(); j++)
+            out.Set(i, j, func(mat.Get(i, j)));
+}
+
+void NMath::Activation(EActivation activation, Matrix &mat, Matrix &out) {
+    
+    if(mat.GetCol() == out.GetCol() && mat.GetRow() == out.GetCol()) {
+        std::cout << "NMath.cpp - [ERROR] - Activation function input and output matrices are of different sizes." << std::endl;
+        return;
+    }
+
+    switch(activation) {
+    case EActivation::Identity :
+        break;
+    case EActivation::Sigmoid :
+        EvaluateFunctionOverMatrix([](const float &x) -> float { return (1.0f / (1.0f + std::exp(-x))); }, mat, out);
+        break;
+    case EActivation::Tanh :
+        EvaluateFunctionOverMatrix([](const float &x) -> float { return std::tanh(x); }, mat, out);
+        break;
+    case EActivation::ReLU :
+        EvaluateFunctionOverMatrix([](const float &x) -> float { return (x > 0.0f) ? x : 0.0f; }, mat, out);
+        break;
+    case EActivation::LeakyReLU :
+        EvaluateFunctionOverMatrix([](const float &x) -> float { return (x > 0.0f) ? x : 0.01f * x; }, mat, out);
+        break;
+    case EActivation::SiLU :
+        EvaluateFunctionOverMatrix([](const float &x) -> float { return x * (1.0f / (1.0f + std::exp(-x))); }, mat, out);
+        break;
+    case EActivation::Softplus :
+        EvaluateFunctionOverMatrix([](const float &x) -> float { return std::log(1.0f + std::exp(x)); }, mat, out);
+        break;
+    case EActivation::Softmax :
+        
+        if(mat.GetCol() > 1) {
+            std::cout << "NMath.cpp - [ERROR] - The softmax activation function is used on matrices with only 1 column." << std::endl;
+            return;
+        }
+
+        float maxVal = mat.MaxElement();
+        float sumExp = 0.0f;
+        for(int i = 0; i < mat.GetRow(); i++) {
+            out.Set(i, 0, std::exp(mat.Get(i, 0) - maxVal));
+            sumExp += mat.Get(i, 0);
+        }
+
+        float epsilon = 1e-4;
+        for(int i = 0; i < mat.GetRow(); i++)
+            out.Set(i, 0, mat.Get(i, 0) / (sumExp + epsilon));
+        break;
+
+    }
+
+}
+
 /*
     void NMath::InitializeWeights(EInitialization initializer, EDistribution distribution, Matrix &mat)
     Description: Given a matrix of weights, along with initializer and distribution types, initialize
