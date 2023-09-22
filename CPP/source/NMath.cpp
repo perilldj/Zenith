@@ -78,12 +78,12 @@ void NMath::Activation(EActivation activation, Matrix &mat, Matrix &out) {
 }
 
 /*
-    void NMath::ActivationDerivative(EActivation activation, Matrix &mat, Matrix &out)
-        Description: Applies the given activation derivative function to all elements in mat and stores the output
+    void NMath::ActivationGradient(EActivation activation, Matrix &mat, Matrix &out)
+        Description: Applies the given activation gradient function to all elements in mat and stores the output
                      in the provided "out" matrix passed by reference.
 */
 
-void NMath::ActivationDerivative(EActivation activation, Matrix &mat, Matrix &out) {
+void NMath::ActivationGradient(EActivation activation, Matrix &mat, Matrix &out) {
 
     if(mat.GetCol() == out.GetCol() && mat.GetRow() == out.GetCol()) {
         std::cout << "NMath.cpp - [ERROR] - Activation function input and output matrices are of different sizes." << std::endl;
