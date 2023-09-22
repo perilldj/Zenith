@@ -34,9 +34,9 @@ public:
     static std::shared_ptr<Matrix> C_EmptyProductMatrix(Matrix &mat1, Matrix &mat2);
     static void Product(Matrix &mat1, Matrix &mat2, Matrix &out);
 
-private:
-
     static bool IsEqualSize(Matrix &mat1, Matrix &mat2);
+
+private:
 
     std::vector<std::vector<float>> arr;
     int row = 0;

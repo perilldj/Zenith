@@ -50,8 +50,8 @@ public:
     static void Activation(EActivation activation, Matrix &mat, Matrix &out);
     static void ActivationGradient(EActivation activation, Matrix &mat, Matrix &out);
 
-    //static float Cost(ECost cost, Matrix &mat);
-    //static void CostGradient(ECost cost, Matrix &mat, Matrix &out);
+    static float Cost(ECost cost, Matrix &expected, Matrix &actual);
+    static void CostGradient(ECost cost, Matrix &expected, Matrix &actual, Matrix &out);
 
     static float RandomUniformFloat(float lowerBound, float upperBound);
     static float RandomNormalFloat(float mean, float stdDev);

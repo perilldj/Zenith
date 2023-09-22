@@ -34,6 +34,7 @@ void NMath::Activation(EActivation activation, Matrix &mat, Matrix &out) {
     }
 
     switch(activation) {
+
     case EActivation::Identity :
         break;
     case EActivation::Sigmoid :
@@ -86,11 +87,12 @@ void NMath::Activation(EActivation activation, Matrix &mat, Matrix &out) {
 void NMath::ActivationGradient(EActivation activation, Matrix &mat, Matrix &out) {
 
     if(mat.GetCol() == out.GetCol() && mat.GetRow() == out.GetCol()) {
-        std::cout << "NMath.cpp - [ERROR] - Activation function input and output matrices are of different sizes." << std::endl;
+        std::cout << "NMath.cpp - [ERROR] - Activation gradient input and output matrices are of different sizes." << std::endl;
         return;
     }
 
     switch(activation) {
+
     case EActivation::Identity :
         out.Clear();
         break;
@@ -118,7 +120,7 @@ void NMath::ActivationGradient(EActivation activation, Matrix &mat, Matrix &out)
     case EActivation::Softmax :
 
         if(mat.GetCol() > 1) {
-            std::cout << "NMath.cpp - [ERROR] - The softmax derivative function is used on matrices with only 1 column." << std::endl;
+            std::cout << "NMath.cpp - [ERROR] - The softmax gradient function is used on matrices with only 1 column." << std::endl;
             return;
         }
 
@@ -133,6 +135,75 @@ void NMath::ActivationGradient(EActivation activation, Matrix &mat, Matrix &out)
             out.Set(i, 0, (exp * expSum - exp * exp) / (expSum * expSum));
         }
         break;
+
+    }
+
+}
+
+/*
+    float NMath::Cost(ECost cost, Matrix &expected, Matrix &actual)
+    Description: Calculates the total cost of a matrix with it's expected result.
+*/
+
+float NMath::Cost(ECost cost, Matrix &expected, Matrix &actual) {
+
+    if(!Matrix::IsEqualSize(expected, actual)) {
+        std::cout << "NMath.cpp - [ERROR] - Cost function matrices sizes are of different sizes." << std::endl;
+        return -1.0f;
+    }
+
+    float result = 0.0f;
+
+    switch (cost) {
+
+    case ECost::MSE :
+        
+        for(int i = 0; i < actual.GetRow(); i++)
+            for(int j = 0; j < actual.GetCol(); j++)
+                result += std::pow(actual.Get(i, j) - expected.Get(i, j), 2);
+        break;
+
+    case ECost::CrossEntropy :
+
+        for(int i = 0; i < expected.GetRow(); i++)
+            for(int j = 0; j < expected.GetCol(); j++)
+                if(expected.Get(i, j) == 1.0f)
+                    result += -std::log(actual.Get(i, j));
+        break;
+
+    }
+
+    return result;
+
+}
+
+/*
+    void NMath::CostGradient(ECost cost, Matrix &mat, Matrix &out)
+    Description: Calculates the cost gradient matrix from the expected and actual cost values.
+                 The result is stored in the provided "out" matrix passed by reference.
+*/
+    
+void NMath::CostGradient(ECost cost, Matrix &expected, Matrix &actual, Matrix &out) {
+
+    if(!Matrix::IsEqualSize(expected, actual) && !Matrix::IsEqualSize(actual, out)) {
+        std::cout << "NMath.cpp - [ERROR] - Cost gradient matrices sizes are of different sizes." << std::endl;
+        return;
+    }
+
+    switch(cost) {
+
+    case ECost::MSE :
+
+        for(int i = 0; i < actual.GetRow(); i++)
+            for(int j = 0; j < actual.GetCol(); j++)
+                out.Set(i, j, 2.0f * (actual.Get(i, j) - expected.Get(i, j)));
+        break;
+
+    case ECost::CrossEntropy :
+    
+        for(int i = 0; i < actual.GetRow(); i++)
+            for(int j = 0; j < actual.GetCol(); j++)
+                out.Set(i, j, expected.Get(i, j));
 
     }
 
