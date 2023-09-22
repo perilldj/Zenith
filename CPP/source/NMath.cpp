@@ -7,14 +7,27 @@ std::mt19937 NMath::n_gen(NMath::rd());
 std::uniform_real_distribution<float> NMath::u_dis(0.0f, 1.0f);
 std::normal_distribution<float> NMath::n_dis(0.0f, 1.0f);
 
+/*
+    void NMath::EvaluateFunctionOverMatrix(float (*func)(const float&), Matrix &mat, Matrix &out)
+    Description: Given a function pointer that takes a const float reference and returns a float, the
+                 provided function is then applied on every element in the given matrix, storing
+                 the respective result in the provided "out" matrix passed by refernece.
+*/
+
 void NMath::EvaluateFunctionOverMatrix(float (*func)(const float&), Matrix &mat, Matrix &out) {
     for(int i = 0; i < mat.GetRow(); i++)
         for(int j = 0; j < mat.GetCol(); j++)
             out.Set(i, j, func(mat.Get(i, j)));
 }
 
+/*
+    void NMath::Activation(EActivation activation, Matrix &mat, Matrix &out)
+    Description: Applies the given activation function to all elements in mat and stores the output
+                 in the provided "out" matrix passed by reference.
+*/
+
 void NMath::Activation(EActivation activation, Matrix &mat, Matrix &out) {
-    
+
     if(mat.GetCol() == out.GetCol() && mat.GetRow() == out.GetCol()) {
         std::cout << "NMath.cpp - [ERROR] - Activation function input and output matrices are of different sizes." << std::endl;
         return;
