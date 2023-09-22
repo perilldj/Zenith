@@ -16,7 +16,9 @@ public:
     void Set(int row, int col, float value);
 
     void Fill(float val);
+    void Clear();
     float MaxElement();
+    float MinElement();
 
     inline float GetRow() { return row; }
     inline float GetCol() { return col; }

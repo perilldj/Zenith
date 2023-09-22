@@ -57,6 +57,21 @@ void Matrix::Fill(float val) {
         std::fill(arr[i].begin(), arr[i].end(), val);
 }
 
+/*
+    void Matrix::Clear()
+    Description: Sets the contents of the matrix to 0.
+*/
+
+void Matrix::Clear() {
+    for(int i = 0; i < row; i++)
+        std::fill(arr[i].begin(), arr[i].end(), 0.0f);
+}
+
+/*
+    float Matrix::MaxElement();
+    Description: Returns the largest value in the matrix.
+*/
+
 float Matrix::MaxElement() {
     float max = Get(0, 0);
     for(int i = 0; i < GetRow(); i++)
@@ -64,6 +79,20 @@ float Matrix::MaxElement() {
             if(Get(i, j) > max)
                 max = Get(i, j);
     return max;
+}
+
+/*
+    float Matrix::MinElement();
+    Description: Returns the lowest value in the matrix.
+*/
+
+float Matrix::MinElement() {
+    float min = Get(0, 0);
+    for(int i = 0; i < GetRow(); i++)
+        for(int j = 0; j < GetCol(); j++)
+            if(Get(i, j) < min)
+                min = Get(i, j);
+    return min;
 }
 
 /*
