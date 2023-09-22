@@ -78,6 +78,67 @@ void NMath::Activation(EActivation activation, Matrix &mat, Matrix &out) {
 }
 
 /*
+    void NMath::ActivationDerivative(EActivation activation, Matrix &mat, Matrix &out)
+        Description: Applies the given activation derivative function to all elements in mat and stores the output
+                     in the provided "out" matrix passed by reference.
+*/
+
+void NMath::ActivationDerivative(EActivation activation, Matrix &mat, Matrix &out) {
+
+    if(mat.GetCol() == out.GetCol() && mat.GetRow() == out.GetCol()) {
+        std::cout << "NMath.cpp - [ERROR] - Activation function input and output matrices are of different sizes." << std::endl;
+        return;
+    }
+
+    switch(activation) {
+    case EActivation::Identity :
+        out.Clear();
+        break;
+    case EActivation::Sigmoid :
+        EvaluateFunctionOverMatrix([](const float &x) -> float { float sigmoid = (1.0f / (1.0f + std::exp(-x)));
+                                                                 return sigmoid * (1 - sigmoid); }, mat, out);
+        break;
+    case EActivation::Tanh :
+        EvaluateFunctionOverMatrix([](const float &x) -> float { return 1.0f - std::pow(std::tanh(x), 2); }, mat, out);
+        break;
+    case EActivation::ReLU :
+        EvaluateFunctionOverMatrix([](const float &x) -> float { return (x > 0.0f) ? 1.0f : 0.0f; }, mat, out);
+        break;
+    case EActivation::LeakyReLU :
+        EvaluateFunctionOverMatrix([](const float &x) -> float { return (x > 0.0f) ? 1.0f : 0.01f; }, mat, out);
+        break;
+    case EActivation::SiLU :
+        EvaluateFunctionOverMatrix([](const float &x) -> float { float sigmoid = (1.0f / (1.0f + std::exp(-x)));
+                                                                 float dSigmoid = sigmoid * (1 - sigmoid);
+                                                                 return sigmoid + x * dSigmoid; }, mat, out);
+        break;
+    case EActivation::Softplus :
+        EvaluateFunctionOverMatrix([](const float &x) -> float { return(1.0f / (1.0f + std::exp(-x))); }, mat, out);
+        break;
+    case EActivation::Softmax :
+
+        if(mat.GetCol() > 1) {
+            std::cout << "NMath.cpp - [ERROR] - The softmax derivative function is used on matrices with only 1 column." << std::endl;
+            return;
+        }
+
+        float expSum = 0.0f;
+        for(int i = 0; i < mat.GetRow(); i++) {
+            expSum += std::exp(mat.Get(i, 0));
+        }
+
+        float exp = 0.0f;
+        for(int i = 0; i < mat.GetRow(); i++) {
+            exp = std::exp(mat.Get(i, 0));
+            out.Set(i, 0, (exp * expSum - exp * exp) / (expSum * expSum));
+        }
+        break;
+
+    }
+
+}
+
+/*
     void NMath::InitializeWeights(EInitialization initializer, EDistribution distribution, Matrix &mat)
     Description: Given a matrix of weights, along with initializer and distribution types, initialize
                  starting weights for the weights given its incoming and outgoing connections derived from the matrix size.
