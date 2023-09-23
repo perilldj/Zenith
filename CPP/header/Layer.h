@@ -21,7 +21,8 @@ class Layer {
 
     Layer() {}
 
-    virtual int GetParameterCount();
+    virtual int GetParameterCount() { }
+    virtual void PrintLayerInformation() { }
 
     virtual void Evaluate() {}
     virtual void Backpropogation(Matrix &gradients) {}

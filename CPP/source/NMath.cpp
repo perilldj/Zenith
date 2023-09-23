@@ -66,12 +66,12 @@ void NMath::Activation(EActivation activation, Matrix &mat, Matrix &out) {
         float sumExp = 0.0f;
         for(int i = 0; i < mat.GetRow(); i++) {
             out.Set(i, 0, std::exp(mat.Get(i, 0) - maxVal));
-            sumExp += mat.Get(i, 0);
+            sumExp += out.Get(i, 0);
         }
 
         float epsilon = 1e-4;
-        for(int i = 0; i < mat.GetRow(); i++)
-            out.Set(i, 0, mat.Get(i, 0) / (sumExp + epsilon));
+        for(int i = 0; i < out.GetRow(); i++)
+            out.Set(i, 0, out.Get(i, 0) / (sumExp + epsilon));
         break;
 
     }
