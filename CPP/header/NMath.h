@@ -33,12 +33,12 @@ enum ECost {
 };
 
 enum ELayer {
-    Empty,
     Dense,
     Conv2D,
     MaxPooling,
     MeanPooling,
-    Dropout
+    Dropout,
+    Flatten
 };
 
 class NMath {
