@@ -2,10 +2,10 @@
 
 void Testing::RunTest() {
     
-    std::shared_ptr<Matrix> inputs = Matrix::CreateMatrix(10, 1);
-    std::shared_ptr<Matrix> result = Matrix::CreateMatrix(10, 1);
-    NMath::InitializeWeights(EInitialization::Xavier, EDistribution::Normal, *inputs.get());
-    NMath::Activation(EActivation::Softmax, *inputs.get(), *result.get());
+    std::shared_ptr<Network> network = std::make_shared<Network>();
+    network->Dense(50, EActivation::Sigmoid);
+    network->Dense(25, EActivation::ReLU);
+    network->Dense(10, EActivation::Softmax);
     
     std::cout << "AA" << std::endl;
 
