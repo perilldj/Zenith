@@ -6,9 +6,9 @@ class Layer {
     
 public:
 
-    int outputWidth = 0;
-    int outputHeight = 0;
-    int outputChannels = 0;
+    int inputWidth = 0, outputWidth = 0;
+    int inputHeight = 0, outputHeight = 0;
+    int inputChannels = 0, outputChannels = 0;
 
     int outputCount = 0;
 
@@ -20,16 +20,28 @@ public:
     bool isOutputLayer = false;
     bool isInputLayer = false;
 
+    std::shared_ptr<Matrix> zOutputs;
     std::shared_ptr<Matrix> aOutputs;
     std::shared_ptr<Matrix> dataIn;
+
+    EInitialization initializer = EInitialization::Random;
+    EDistribution distribution = EDistribution::Uniform;
 
     Layer() {}
 
     virtual int GetParameterCount() { return 0; }
     virtual void PrintLayerInformation() { }
 
-    virtual void SetInputShape(int inputWidth, int inputHeight, int inputChannels) {}
-    virtual void SetInputShape(Layer &previousLayer) {}
+    virtual void SetInputShape(int w, int h, int c) {
+        inputWidth = w; inputHeight = h; inputChannels = c;
+    }
+
+    virtual void SetInputShape(Layer &previousLayer) {
+        inputWidth = previousLayer.inputWidth; 
+        inputHeight = previousLayer.inputHeight; 
+        inputChannels = previousLayer.inputChannels;
+    }
+
     virtual void SetInputData(std::vector<float> &data) {}
 
     virtual void InitializeLayer() {}

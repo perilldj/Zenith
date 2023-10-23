@@ -4,20 +4,25 @@ Network::Network() {
 
 }
 
+void Network::SetInputShape(int w, int h, int c) {
+    inputWidth = w; inputHeight = h; inputChannels = c;
+}
+
 void Network::Compile() {
 
+    std::cout << "\nCompiling Network..." << std::endl;
     if(disableCompilation)
         return;
 
     if(layerTypes.back() != ELayer::Dense) {
-        std::cout << "Network::Compile [ERROR] - Last layer must be a DenseLayer." << std::endl;
+        std::cout << "Compile [ERROR] - Last layer must be a DenseLayer." << std::endl;
         disableCompilation = true;
         return;
     }
 
     std::shared_ptr<DenseLayer> lastLayer = std::static_pointer_cast<DenseLayer, Layer>(layers.back());
     if(networkCost == ECost::CrossEntropy && lastLayer->activation != EActivation::Softmax) {
-        std::cout << "Network::Compile [ERROR] - When using the cross entropy cost function the last layer's" <<
+        std::cout << "Compile [ERROR] - When using the cross entropy cost function the last layer's" <<
                      " activation function must be Softmax." << std::endl;
         disableCompilation = true;
         return;
@@ -35,6 +40,8 @@ void Network::Compile() {
     }
 
     isNetworkCompiled = true;
+    PrintNetworkStatus();
+    std::cout << "Compilation Successful." << std::endl;
 
 }
 
@@ -48,4 +55,16 @@ void Network::Dense(int nodeCount, EActivation activation) {
     layer->outputCount = nodeCount;
     layers.push_back(std::static_pointer_cast<Layer, DenseLayer>(layer));
     layerTypes.push_back(ELayer::Dense);
+}
+
+void Network::PrintNetworkStatus() {
+    std::cout << "---------- NETWORK STRUCTURE ----------" << std::endl;
+    std::cout << "Layer Type              Node Count      " << std::endl;
+    int count = 0;
+    for(int i = 0; i < layers.size(); i++) {
+        layers[i]->PrintLayerInformation();
+        count += layers[i]->GetParameterCount();
+    }
+    std::cout << "Total Parameter Count:  " << count << std::endl;
+    std::cout << "---------------------------------------" << std::endl;
 }

@@ -30,13 +30,13 @@ public:
 
     Network();
 
+    void SetInputShape(int w, int h, int c);
+
     void Evaluate(Matrix &result);
     void SetInput(Matrix &input);
 
     void TrainNetwork();
     void TestNetwork(bool print, bool save);
-
-    void DefineInputShape(int inputWidth, int inputHeight, int inputChannels);
 
     void Dense(int nodeCount, EActivation activation);
 
@@ -48,5 +48,7 @@ public:
     void DecayLearningRate(int epoch);
 
 private:
+
+    void PrintNetworkStatus();
 
 };

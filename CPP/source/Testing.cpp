@@ -6,7 +6,8 @@ void Testing::RunTest() {
     network->Dense(50, EActivation::Sigmoid);
     network->Dense(25, EActivation::ReLU);
     network->Dense(10, EActivation::Softmax);
-    
-    std::cout << "AA" << std::endl;
+    network->SetInputShape(50, 1, 1);
+
+    network->Compile();
 
 }
