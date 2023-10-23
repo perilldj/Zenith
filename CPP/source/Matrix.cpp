@@ -200,7 +200,7 @@ void Matrix::Product(Matrix &mat1, Matrix &mat2, Matrix &out) {
 }
 
 /*
-    bool Matrix::IsEqualSize(MAtrix &mat1, Matrix &mat2)
+    bool Matrix::IsEqualSize(Matrix &mat1, Matrix &mat2)
     Description: Checks if the two provided matrixes are the same size.
 */
 
