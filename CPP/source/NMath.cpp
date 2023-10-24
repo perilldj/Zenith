@@ -7,6 +7,19 @@ std::mt19937 NMath::n_gen(NMath::rd());
 std::uniform_real_distribution<float> NMath::u_dis(0.0f, 1.0f);
 std::normal_distribution<float> NMath::n_dis(0.0f, 1.0f);
 
+void NMath::dCdz(ECost cost, EActivation activation, bool isOutputLayer, Matrix &gradients, 
+                 Matrix &aOutputs, Matrix &zOutputs, Matrix &result) {
+
+    if(isOutputLayer && cost == ECost::CrossEntropy && activation == EActivation::Softmax) {
+        Matrix::Subtract(aOutputs, gradients, result);
+        return;
+    }
+
+    NMath::ActivationGradient(activation, zOutputs, result);
+    Matrix::ElementWiseMultiplication(result, gradients, result);
+
+}
+
 /*
     void NMath::EvaluateFunctionOverMatrix(float (*func)(const float&), Matrix &mat, Matrix &out)
     Description: Given a function pointer that takes a const float reference and returns a float, the

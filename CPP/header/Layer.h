@@ -24,6 +24,9 @@ public:
     std::shared_ptr<Matrix> aOutputs;
     std::shared_ptr<Matrix> dataIn;
 
+    std::vector<std::shared_ptr<Matrix>> g_Activations;
+
+    ECost networkCost = ECost::MSE;
     EInitialization initializer = EInitialization::Random;
     EDistribution distribution = EDistribution::Uniform;
 

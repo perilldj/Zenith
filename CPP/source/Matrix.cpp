@@ -48,6 +48,15 @@ void Matrix::Set(int row, int col, float value) {
 }
 
 /*
+    bool Matrix::Empty()
+    Description: Returns true if the matrix isn't initialized, false otherwise.
+*/
+
+bool Matrix::Empty() {
+    return (arr.empty() || this->col == 0);
+}
+
+/*
     void Matrix::Fill(float val)
     Description: Fills the matrix with a specific value.
 */
@@ -132,6 +141,36 @@ void Matrix::Add(Matrix &mat1, Matrix &mat2, Matrix &out) {
     for(int i = 0; i < mat1.row; i++)
         for(int j = 0; j < mat1.col; j++)
             out.Set(i, j, mat1.Get(i, j) + mat2.Get(i, j));
+}
+
+/*
+    void Matrix::Subtract(Matrix &mat1, Matrix &mat2, Matrix &out)
+    Description: Subtracts two same size matrices together, stores the result in
+                 the out matrix passed by reference.
+*/
+
+void Matrix::Subtract(Matrix &mat1, Matrix &mat2, Matrix &out) {
+    if(!IsEqualSize(mat1, mat2) || !IsEqualSize(mat2, out))
+        return;
+    for(int i = 0; i < mat1.row; i++)
+        for(int j = 0; j < mat1.col; j++)
+            out.Set(i, j, mat1.Get(i, j) - mat2.Get(i, j));
+}
+
+/*
+    void Matrix::ElementWiseMultiplication(Matrix &mat1, Matrix &mat2, Matrix &out)
+    Description: As opposed to actual matrix multiplcication, this function multipies
+                 each element of a matrix with the element in the same location in mat2.
+                 Matrices must be of equal size. Result is stored in the out matrix
+                 passed by reference.
+*/
+
+void Matrix::ElementWiseMultiplication(Matrix &mat1, Matrix &mat2, Matrix &out) {
+    if(!IsEqualSize(mat1, mat2) || !IsEqualSize(mat2, out))
+        return;
+    for(int i = 0; i < mat1.row; i++)
+        for(int j = 0; j < mat1.col; j++)
+            out.Set(i, j, mat1.Get(i, j) * mat2.Get(i, j));
 }
 
 /*

@@ -36,6 +36,9 @@ void Network::Compile() {
             layers[i]->SetInputShape(*layers[i - 1].get());
 
         layers[i]->InitializeLayer();
+        layers[i]->networkCost = networkCost;
+        layers[i]->initializer = networkInitializer;
+        layers[i]->distribution = networkDistribution;
 
     }
 
@@ -58,13 +61,15 @@ void Network::Dense(int nodeCount, EActivation activation) {
 }
 
 void Network::PrintNetworkStatus() {
-    std::cout << "---------- NETWORK STRUCTURE ----------" << std::endl;
-    std::cout << "Layer Type              Node Count      " << std::endl;
+    std::cout << "--------------- NETWORK STRUCTURE ---------------" << std::endl;
+    std::cout << "-------------------------------------------------" << std::endl;
+    std::cout << "Layer Type         Activation        Param Count " << std::endl;
     int count = 0;
     for(int i = 0; i < layers.size(); i++) {
         layers[i]->PrintLayerInformation();
         count += layers[i]->GetParameterCount();
     }
+    std::cout << "-------------------------------------------------" << std::endl;
     std::cout << "Total Parameter Count:  " << count << std::endl;
-    std::cout << "---------------------------------------" << std::endl;
+    std::cout << "-------------------------------------------------" << std::endl;
 }

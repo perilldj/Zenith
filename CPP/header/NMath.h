@@ -3,6 +3,7 @@
 #include <cmath>
 #include <random>
 #include <algorithm>
+#include <Map>
 #include "../header/Matrix.h"
 
 enum EInitialization {
@@ -10,6 +11,8 @@ enum EInitialization {
     Kaiming,
     Xavier
 };
+
+
 
 enum EDistribution {
     Uniform,
@@ -26,6 +29,22 @@ enum EActivation {
     Softplus,
     Softmax
 };
+
+inline std::ostream &operator<<(std::ostream &os, EActivation activation) {
+    const std::map<EActivation, const char*> EnumTable {
+        {EActivation::Identity, "Identity"},
+        {EActivation::Sigmoid, "Sigmoid"},
+        {EActivation::Tanh, "Tanh"},
+        {EActivation::ReLU, "ReLU"},
+        {EActivation::LeakyReLU, "Leaky ReLU"},
+        {EActivation::SiLU, "SiLU"},
+        {EActivation::Softplus, "Softplus"},
+        {EActivation::Softmax, "Softmax"}
+    };
+    auto it = EnumTable.find(activation);
+    os << (it == EnumTable.end() ? "[ERROR] - Enum value not found." : it->second);
+    return os;
+}
 
 enum ECost {
     MSE,
@@ -46,6 +65,9 @@ class NMath {
 public:
 
     static void EvaluateFunctionOverMatrix(float (*func)(const float&), Matrix &mat, Matrix &out);
+
+    static void dCdz(ECost cost, EActivation activation, bool isOutputLayer, Matrix &gradients, 
+                     Matrix &aOutputs, Matrix &zOutputs, Matrix &result);
 
     static void Activation(EActivation activation, Matrix &mat, Matrix &out);
     static void ActivationGradient(EActivation activation, Matrix &mat, Matrix &out);

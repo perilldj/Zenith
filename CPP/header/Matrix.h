@@ -15,6 +15,8 @@ public:
     float Get(int row, int col);
     void Set(int row, int col, float value);
 
+    bool Empty();
+
     void Fill(float val);
     void Clear();
     float MaxElement();
@@ -27,6 +29,8 @@ public:
     static void Scale(float s, Matrix &mat, Matrix &out);
 
     static void Add(Matrix &mat1, Matrix &mat2, Matrix &out);
+    static void Subtract(Matrix &mat1, Matrix &mat2, Matrix &out);
+    static void ElementWiseMultiplication(Matrix &mat1, Matrix &mat2, Matrix &out);
 
     static std::shared_ptr<Matrix> C_Transpose(Matrix &mat);
     static void Transpose(Matrix &mat, Matrix &out);

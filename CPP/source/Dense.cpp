@@ -1,4 +1,5 @@
 #include "../header/Dense.h"
+#include <iomanip>
 
 DenseLayer::DenseLayer() {
 
@@ -16,6 +17,8 @@ void DenseLayer::InitializeLayer() {
 
     if(isInputLayer)
         dataIn = std::make_shared<Matrix>(inputWidth, 1);
+    else
+        g_Activations.push_back(std::make_shared<Matrix>(inputHeight, inputWidth));
 
     NMath::InitializeWeights(initializer, distribution, *weights.get());
 
@@ -29,7 +32,8 @@ int DenseLayer::GetParameterCount() {
 }
 
 void DenseLayer::PrintLayerInformation() {
-    std::cout << "Dense\t\t\t" << GetParameterCount() << std::endl;
+    std::cout << std::left << std::setw(19) << "Dense" << std::setw(18) << activation 
+                           << std::setw(18) << GetParameterCount() << std::endl;
 }
 
 void DenseLayer::Evaluate() {
@@ -43,6 +47,13 @@ void DenseLayer::Evaluate() {
 }
 
 void DenseLayer::Backpropogation(Matrix &gradients) {
+    
+    if(isInputLayer)
+        return;
+
+    Matrix dCdz = Matrix(gradients.GetCol(), gradients.GetRow());
+    NMath::dCdz(networkCost, activation, isOutputLayer, 
+                gradients, *aOutputs.get(), *zOutputs.get(), dCdz);
 
 }
 
