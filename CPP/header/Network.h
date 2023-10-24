@@ -4,6 +4,7 @@
 
 #include "../header/Layer.h"
 #include "../header/Dense.h"
+#include "../header/Datapoint.h"
 
 namespace py = pybind11;
 
@@ -20,6 +21,10 @@ public:
     bool disableCompilation = false;
 
     int inputWidth = 0, inputHeight = 0, inputChannels = 0;
+
+    int totalEpochCount = 1;
+    int minibatch = 10;
+    float trainingTestingSplit = 0.8f;
 
     ECost networkCost = ECost::MSE;
     EInitialization networkInitializer = EInitialization::Random;
@@ -42,13 +47,18 @@ public:
 
     void Compile();
 
-    void AddTrainingDatapoint(py::array_t<float> &data, int label);
-    void AddTestingDatapoint(py::array_t<float> &data, int label);
+    void AddDatapoint(py::array_t<float> &datapoint, int label);
 
     void DecayLearningRate(int epoch);
 
 private:
 
+    std::vector<Datapoint> data;
+    std::vector<Datapoint> trainingData;
+    std::vector<Datapoint> testingData;
+
+    void SplitData();
     void PrintNetworkStatus();
+
 
 };

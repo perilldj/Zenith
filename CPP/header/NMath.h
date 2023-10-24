@@ -12,12 +12,31 @@ enum EInitialization {
     Xavier
 };
 
-
+inline std::ostream &operator<<(std::ostream &os, EInitialization activation) {
+    const std::map<EInitialization, const char*> EnumTable {
+        {EInitialization::Random, "Random"},
+        {EInitialization::Kaiming, "Kaiming He"},
+        {EInitialization::Xavier, "Xavier Glorot"},
+    };
+    auto it = EnumTable.find(activation);
+    os << (it == EnumTable.end() ? "[ERROR] - Enum value not found." : it->second);
+    return os;
+}
 
 enum EDistribution {
     Uniform,
     Normal
 };
+
+inline std::ostream &operator<<(std::ostream &os, EDistribution activation) {
+    const std::map<EDistribution, const char*> EnumTable {
+        {EDistribution::Uniform, "Uniform"},
+        {EDistribution::Normal, "Normal"},
+    };
+    auto it = EnumTable.find(activation);
+    os << (it == EnumTable.end() ? "[ERROR] - Enum value not found." : it->second);
+    return os;
+}
 
 enum EActivation {
     Identity,
@@ -51,6 +70,16 @@ enum ECost {
     CrossEntropy
 };
 
+inline std::ostream &operator<<(std::ostream &os, ECost activation) {
+    const std::map<ECost, const char*> EnumTable {
+        {ECost::MSE, "Mean Squared Error"},
+        {ECost::CrossEntropy, "Categorial Cross Entropy"},
+    };
+    auto it = EnumTable.find(activation);
+    os << (it == EnumTable.end() ? "[ERROR] - Enum value not found." : it->second);
+    return os;
+}
+
 enum ELayer {
     Dense,
     Conv2D,
@@ -59,6 +88,20 @@ enum ELayer {
     Dropout,
     Flatten
 };
+
+inline std::ostream &operator<<(std::ostream &os, ELayer activation) {
+    const std::map<ELayer, const char*> EnumTable {
+        {ELayer::Dense, "Dense"},
+        {ELayer::Conv2D, "Convolutional 2D"},
+        {ELayer::MaxPooling, "Max Pooling"},
+        {ELayer::MeanPooling, "Mean Pooling"},
+        {ELayer::Dropout, "Dropout"},
+        {ELayer::Flatten, "Flatten"},
+    };
+    auto it = EnumTable.find(activation);
+    os << (it == EnumTable.end() ? "[ERROR] - Enum value not found." : it->second);
+    return os;
+}
 
 class NMath {
 
