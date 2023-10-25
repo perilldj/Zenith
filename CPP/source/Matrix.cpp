@@ -338,7 +338,7 @@ void Matrix::ElementWiseMultiplication(Matrix &mat1, Matrix &mat2, Matrix &out) 
     for(int i = 0; i < mat1.depth; i++)
         for(int j = 0; j < mat1.row; j++)
             for(int k = 0; k < mat1.col; k++)
-            out.Set(i, j, k, mat1.Get(i, j. k) * mat2.Get(i, j, k));
+                out.Set(i, j, k, mat1.Get(i, j, k) * mat2.Get(i, j, k));
 }
 
 /*
@@ -351,7 +351,7 @@ std::shared_ptr<Matrix> Matrix::C_Transpose(Matrix &mat) {
     if(!mat.CheckDimension(THREE_DIMENSIONAL)) {
         std::cout << "Matrix.cpp - [ERROR] - C_Transpose(Matrix &mat) function accepts 1 or 2-dimensional matrices, " 
                   << mat.matrixDimension << "-dimensional matrix provided.";
-        return;
+        return std::shared_ptr<Matrix>();
     }
 
     std::shared_ptr<Matrix> out = std::make_shared<Matrix>(mat.col, mat.row);
@@ -359,11 +359,11 @@ std::shared_ptr<Matrix> Matrix::C_Transpose(Matrix &mat) {
         for(int j = 0; j < mat.col; j++)
             out->Set(i, j, mat.Get(j, i));
     return out;
-    return std::shared_ptr<Matrix>();
+
 }
 
 /*
-    void Matrix::Transpose(MAtrix &mat, Matrix &out)
+    void Matrix::Transpose(Matrix &mat, Matrix &out)
     Description: Transposes a matrix to an alreaty initialized matrix.
                  The out matrix must be the correct size.
 */
@@ -395,7 +395,7 @@ std::shared_ptr<Matrix> Matrix::C_EmptyProductMatrix(Matrix &mat1, Matrix &mat2)
     if(!mat1.CheckDimension(THREE_DIMENSIONAL) || !mat2.CheckDimension(THREE_DIMENSIONAL)) {
         std::cout << "Matrix.cpp - [ERROR] - C_EmptyProductMatrix(Matrix &mat1, Matrix &mat2) function accepts 1 or 2-dimensional matrices, " 
                   << mat1.matrixDimension << "-dimensional and " << mat2.matrixDimension << "-dimensional matrix provided.";
-        return;
+        return std::shared_ptr<Matrix>();
     }
 
     if(mat1.col != mat2.row) {
