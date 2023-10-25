@@ -8,6 +8,11 @@ void Network::SetInputShape(int w, int h, int c) {
     inputWidth = w; inputHeight = h; inputChannels = c;
 }
 
+void Network::Evaluate(const std::vector<float> &input, Matrix &result) {
+    //layers[0]->SetInputData(input);
+    //layers[0]->Evaluate();
+}
+
 void Network::Dense(int nodeCount, EActivation activation) {
     std::shared_ptr<DenseLayer> layer = std::make_shared<DenseLayer>();
     if(layers.empty())

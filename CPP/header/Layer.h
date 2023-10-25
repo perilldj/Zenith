@@ -45,7 +45,9 @@ public:
         inputChannels = previousLayer.inputChannels;
     }
 
-    virtual void SetInputData(std::vector<float> &data) {}
+    //virtual void SetInputData(std::vector<float> dataIn) {
+        
+    //}
 
     virtual void InitializeLayer() {}
 

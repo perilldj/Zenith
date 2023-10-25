@@ -37,8 +37,7 @@ public:
 
     void SetInputShape(int w, int h, int c);
 
-    void Evaluate(Matrix &result);
-    void SetInput(Matrix &input);
+    void Evaluate(const std::vector<float> &input, Matrix &result);
 
     void TrainNetwork();
     void TestNetwork(bool print, bool save);

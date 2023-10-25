@@ -7,15 +7,6 @@ namespace py = pybind11;
 
 PYBIND11_MODULE(Zenith, handle) {
 
-    py::class_<Matrix> ( handle, "Matrix" )
-
-        .def(py::init<int, int>())
-
-        .def("get", &Matrix::Get)
-        .def("set", &Matrix::Set)
-
-    ;
-
     handle.def("RunTest", &Testing::RunTest);
 
 }
