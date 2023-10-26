@@ -59,6 +59,46 @@ void Testing::RunTest() {
     std::cout << f.MaxElement() << " " << f.MinElement() << std::endl;
     std::cout << g->MaxElement() << " " << g->MinElement() << std::endl;
 
+    Matrix m1 = Matrix(3, 3);
+    Matrix m2 = Matrix(3, 3);
+    m1.Fill(1.0f);
+    m2.Fill(2.0f);
+    m1.Set(2, 2, 3.0f);
+    std::shared_ptr<Matrix> m3 = Matrix::CreateMatrix(m1, false);
+    Matrix::Add(m1, m2, *m3.get());
+    std::cout << m3->Get(2, 2) << " " << m3->Get(0, 0) << std::endl;
+
+    m1.Fill(1.0f);
+    m2.Fill(2.0f);
+    m1.Set(2, 2, 3.0f);
+    Matrix::Subtract(m1, m2, *m3.get());
+    std::cout << m3->Get(2, 2) << " " << m3->Get(0, 0) << std::endl;
+
+    m1.Fill(2.0f);
+    m1.Set(2, 2, 3.0f);
+    Matrix::ElementWiseMultiplication(m1, m2, *m3.get());
+    std::cout << m3->Get(2, 2) << " " << m3->Get(0, 0) << std::endl;
+
+    std::cout << mat10x1 << std::endl;
+    std::shared_ptr<Matrix> t = Matrix::C_Transpose(mat10x1);
+    std::cout << *t.get() << std::endl;
+
+    m1.Fill(1.0f);
+    m1.Set(2, 0, 2.0f);
+    m1.Set(0, 2, 3.0f);
+    std::cout << m1.Get(2, 0) << " " << m1.Get(0, 2) << std::endl;
+    Matrix t1 = Matrix(3, 3);
+    Matrix::Transpose(m1, t1);
+    std::cout << t1.Get(2, 0) << " " << t1.Get(0, 2) << std::endl;
+
+    mat1x10.Fill(2.0f);
+    mat10x1.Fill(3.0f);
+    std::shared_ptr<Matrix> product = Matrix::C_EmptyProductMatrix(mat10x1, mat1x10);
+    Matrix::Product(mat10x1, mat1x10, *product.get());
+    std::cout << *product.get() << std::endl;
+    std::cout << product->Get(0, 0) << " " << product->Get(9, 9) << std::endl;
+
+
     std::cout << "done" << std::endl;
 
 }
