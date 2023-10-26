@@ -15,21 +15,22 @@ class Matrix {
 
 public:
 
-    Matrix(int row_, bool isHorizontalVector_);
+    Matrix(int length, bool isHorizontalVector_);
     Matrix(int row_, int col_);
-    Matrix(int row_, int col_, int depth_);
+    Matrix(int depth_, int row_, int col_);
 
-    static std::shared_ptr<Matrix> CreateMatrix(int row, bool isHorizontalVector);
+    static std::shared_ptr<Matrix> CreateMatrix(const Matrix &m, bool copyElements);
+    static std::shared_ptr<Matrix> CreateMatrix(int length, bool isHorizontalVector);
     static std::shared_ptr<Matrix> CreateMatrix(int row, int col);
-    static std::shared_ptr<Matrix> CreateMatrix(int row, int col, int depth);
+    static std::shared_ptr<Matrix> CreateMatrix(int depth, int row, int col);
 
     float Get(int index);
     float Get(int row, int col);
-    float Get(int row, int col, int depth);
+    float Get(int depth, int row, int col);
 
     void Set(int index, float value);
     void Set(int row, int col, float value);
-    void Set(int row, int col, int depth, float value);
+    void Set(int depth, int row, int col, float value);
 
     bool Empty();
 
@@ -38,11 +39,11 @@ public:
     float MaxElement();
     float MinElement();
 
-    inline int GetRow() { return row; }
-    inline int GetCol() { return col; }
-    inline int GetDepth() { return depth; }
+    inline int GetDepth() const { return depth; }
+    inline int GetRow() const { return row; }
+    inline int GetCol() const { return col; }
 
-    static void Scale(float s, Matrix &mat);
+    void Scale(float s);
     static void Scale(float s, Matrix &mat, Matrix &out);
 
     static void Add(Matrix &mat1, Matrix &mat2, Matrix &out);
@@ -65,8 +66,10 @@ private:
     std::vector<std::vector<std::vector<float>>> arr;
     EDimension matrixDimension = EDimension::NULL_DIMENSIONAL;
     bool isHorizontalVector = false;
+    int depth = 0;
     int row = 0;
     int col = 0;
-    int depth = 0;
 
 };
+
+std::ostream &operator<<(std::ostream &os, const Matrix &m);

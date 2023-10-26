@@ -6,17 +6,23 @@
                  and initializes it.
 */
 
-Matrix::Matrix(int row_, bool isHorizontalVector_) :
-    row(row_), isHorizontalVector(isHorizontalVector_) {
+Matrix::Matrix(int length, bool isHorizontalVector_) :
+    isHorizontalVector(isHorizontalVector_) {
     arr.resize(1);
+    row = 1; col = 1;
+    if(!isHorizontalVector)
+        row = length;
+    else
+        col = length;
+    depth = 1;
     matrixDimension = ONE_DIMENSIONAL;
     if(!isHorizontalVector) {
-        arr[0].resize(row);
-        for(int i = 0; i < row; i++)
+        arr[0].resize(length);
+        for(int i = 0; i < length; i++)
             arr[0][i].resize(1);
     } else {
         arr[0].resize(1);
-        arr[0][0].resize(row);
+        arr[0][0].resize(length);
     }
 }
 
@@ -28,6 +34,7 @@ Matrix::Matrix(int row_, bool isHorizontalVector_) :
 
 Matrix::Matrix(int row_, int col_) :
     row(row_), col(col_) {
+    depth = 1;
     matrixDimension = TWO_DIMENSIONAL;
     arr.resize(1);
     arr[0].resize(row);
@@ -36,20 +43,27 @@ Matrix::Matrix(int row_, int col_) :
 }
 
 /*
-    Matrix::Matrix(int row_, int col_)
+    Matrix::Matrix(int depth_, int row_, int col_)
     Description: Constructor of the matrix class, defines the size of the matrix
                  and initializes it.
 */
 
-Matrix::Matrix(int row_, int col_, int depth_) :
+Matrix::Matrix(int depth_, int row_, int col_) :
     row(row_), col(col_), depth(depth_) {
     arr.resize(depth);
     matrixDimension = THREE_DIMENSIONAL;
     for(int i = 0; i < depth; i++) {
         arr[i].resize(row);
-        for(int j = 0; j < depth; j++)
+        for(int j = 0; j < row; j++)
             arr[i][j].resize(col);
     }
+}
+
+std::shared_ptr<Matrix> Matrix::CreateMatrix(const Matrix &m, bool copyElements) {
+    std::shared_ptr<Matrix> result = CreateMatrix(m.depth, m.row, m.col);
+    if(copyElements);
+        // perform copy soon
+    return result;
 }
 
 /*
@@ -57,8 +71,8 @@ Matrix::Matrix(int row_, int col_, int depth_) :
     Description: Creates a matrix with the specified matrix row and orientation.
 */
 
-std::shared_ptr<Matrix> Matrix::CreateMatrix(int row, bool isHorizontalVector) {
-    return std::make_shared<Matrix>(row, isHorizontalVector);
+std::shared_ptr<Matrix> Matrix::CreateMatrix(int length, bool isHorizontalVector) {
+    return std::make_shared<Matrix>(length, isHorizontalVector);
 }
 
 
@@ -72,12 +86,12 @@ std::shared_ptr<Matrix> Matrix::CreateMatrix(int row, int col) {
 }
 
 /*
-    std::shared_tr<Matrix> Matrix::CreateMatrix(int row, int col, int depth)
+    std::shared_tr<Matrix> Matrix::CreateMatrix(int depth, int row, int col)
     Description: Creates a matrix with the specified matrix row, col, and depth size.
 */
 
-std::shared_ptr<Matrix> Matrix::CreateMatrix(int row, int col, int depth) {
-    return std::make_shared<Matrix>(row, col, depth);
+std::shared_ptr<Matrix> Matrix::CreateMatrix(int depth, int row, int col) {
+    return std::make_shared<Matrix>(depth, row, col);
 }
 
 /*
@@ -94,14 +108,14 @@ float Matrix::Get(int index) {
     }
 
     if(!isHorizontalVector) {
-        if(index >= 0 && index < col)
-            return arr[0][0][index];
-    } else {
         if(index >= 0 && index < row)
             return arr[0][index][0];
+    } else {
+        if(index >= 0 && index < col)
+            return arr[0][0][index];
     }
 
-    std::cout << "Matrix.cpp - [ERROR] - Index out of bounds." << std::endl;
+    std::cout << "Matrix.cpp - [ERROR] - Index out of bounds.\n" << std::endl;
     return 0.0f;
 
 }
@@ -115,7 +129,7 @@ float Matrix::Get(int row, int col) {
 
     if(!CheckDimension(TWO_DIMENSIONAL)) {
         std::cout << "Matrix.cpp - [ERROR] - Get(int index) function accepts 2-dimensional matrices, " 
-                  << matrixDimension << "-dimensional matrix provided.";
+                  << matrixDimension << "-dimensional matrix provided.\n";
         return 0.0f;
     }
 
@@ -127,15 +141,15 @@ float Matrix::Get(int row, int col) {
 }
 
 /*
-    float Matrix::Get(int row, int col)
+    float Matrix::Get(int depth, int row, int col)
     Description: Returns the value at the specified row, col, and depth locations.
 */
 
-float Matrix::Get(int row, int col, int depth) {
+float Matrix::Get(int depth, int row, int col) {
 
     if(!CheckDimension(THREE_DIMENSIONAL)) {
         std::cout << "Matrix.cpp - [ERROR] - Get(int row, int col) function accepts 3-dimensional matrices, " 
-                  << matrixDimension << "-dimensional matrix provided.";
+                  << matrixDimension << "-dimensional matrix provided.\n";
         return 0.0f;
     }
 
@@ -155,20 +169,21 @@ void Matrix::Set(int index, float value) {
 
     if(!CheckDimension(ONE_DIMENSIONAL)) {
         std::cout << "Matrix.cpp - [ERROR] - Set(int index, float value) function accepts 1-dimensional matrices, " 
-                  << matrixDimension << "-dimensional matrix provided.";
+                  << matrixDimension << "-dimensional matrix provided.\n";
         return;
     }
 
     if(!isHorizontalVector) {
-        if(index >= 0 && index < col)
-            arr[0][0][index] = value;
-    } else {
         if(index >= 0 && index < row)
             arr[0][index][0] = value;
+        return;
+    } else {
+        if(index >= 0 && index < col)
+            arr[0][0][index] = value;
+        return;
     }
 
     std::cout << "Matrix.cpp - [ERROR] - Index out of bounds." << std::endl;
-    return;
 
 }
 
@@ -181,7 +196,7 @@ void Matrix::Set(int row, int col, float value) {
 
     if(!CheckDimension(TWO_DIMENSIONAL)) {
         std::cout << "Matrix.cpp - [ERROR] - Set(int row, int col, float value) function accepts 2-dimensional matrices, " 
-                  << matrixDimension << "-dimensional matrix provided.";
+                  << matrixDimension << "-dimensional matrix provided.\n";
         return;
     }
 
@@ -194,15 +209,15 @@ void Matrix::Set(int row, int col, float value) {
 }
 
 /*
-    void Matrix::Set(int row, int col, int depth, float value)
+    void Matrix::Set(int depth, int row, int col, float value)
     Description: Sets the value at the specified row and col locations to the new provided value.
 */
 
-void Matrix::Set(int row, int col, int depth, float value) {
+void Matrix::Set(int depth, int row, int col, float value) {
 
     if(!CheckDimension(THREE_DIMENSIONAL)) {
         std::cout << "Matrix.cpp - [ERROR] - Set(int row, int col, float value) function accepts 3-dimensional matrices, " 
-                  << matrixDimension << "-dimensional matrix provided.";
+                  << matrixDimension << "-dimensional matrix provided.\n";
         return;
     }
 
@@ -212,6 +227,10 @@ void Matrix::Set(int row, int col, int depth, float value) {
     }     
     std::cout << "Matrix.cpp - [ERROR] - Index out of bounds." << std::endl;
 
+}
+
+bool Matrix::Empty() {
+    return (depth == 0 || row == 0 || col == 0);
 }
 
 /*
@@ -231,9 +250,7 @@ void Matrix::Fill(float val) {
 */
 
 void Matrix::Clear() {
-    for(int i = 0; i < depth; i++)
-        for(int j = 0; j < row; j++)
-            std::fill(arr[i][j].begin(), arr[i][j].end(), 0.0f);
+    Fill(0.0f);
 }
 
 /*
@@ -242,7 +259,7 @@ void Matrix::Clear() {
 */
 
 float Matrix::MaxElement() {
-    float max = Get(0, 0);
+    float max = Get(0, 0, 0);
     for(int i = 0; i < GetDepth(); i++)
         for(int j = 0; j < GetRow(); j++)
             for(int k = 0; k < GetCol(); k++)
@@ -258,7 +275,7 @@ float Matrix::MaxElement() {
 */
 
 float Matrix::MinElement() {
-    float min = Get(0, 0);
+    float min = Get(0, 0, 0);
     for(int i = 0; i < GetDepth(); i++)
         for(int j = 0; j < GetRow(); j++)
             for(int k = 0; k < GetCol(); k++)
@@ -268,15 +285,15 @@ float Matrix::MinElement() {
 }
 
 /*
-    void Matrix::Scale(float s, Matrix &mat)
+    void Matrix::Scale(float s)
     Description: Scales the provided matrix by the a scalar.
 */
 
-void Matrix::Scale(float s, Matrix &mat) {
-    for(int i = 0; i < mat.depth; i++)
-        for(int j = 0; j < mat.row; j++)
-            for(int k = 0; k < mat.col; k++)
-                mat.arr[i][j][k] *= s;
+void Matrix::Scale(float s) {
+    for(int i = 0; i < depth; i++)
+        for(int j = 0; j < row; j++)
+            for(int k = 0; k < col; k++)
+                arr[i][j][k] *= s;
 }
 
 /*
@@ -350,7 +367,7 @@ std::shared_ptr<Matrix> Matrix::C_Transpose(Matrix &mat) {
 
     if(!mat.CheckDimension(THREE_DIMENSIONAL)) {
         std::cout << "Matrix.cpp - [ERROR] - C_Transpose(Matrix &mat) function accepts 1 or 2-dimensional matrices, " 
-                  << mat.matrixDimension << "-dimensional matrix provided.";
+                  << mat.matrixDimension << "-dimensional matrix provided.\n";
         return std::shared_ptr<Matrix>();
     }
 
@@ -372,7 +389,7 @@ void Matrix::Transpose(Matrix &mat, Matrix &out) {
 
     if(!mat.CheckDimension(THREE_DIMENSIONAL) || !out.CheckDimension(THREE_DIMENSIONAL)) {
         std::cout << "Matrix.cpp - [ERROR] - Transpose(Matrix &mat, Matrix &out) function accepts 1 or 2-dimensional matrices, " 
-                  << mat.matrixDimension << "-dimensional and " << out.matrixDimension << "-dimensional matrix provided.";
+                  << mat.matrixDimension << "-dimensional and " << out.matrixDimension << "-dimensional matrix provided.\n";
         return;
     }
 
@@ -394,7 +411,7 @@ std::shared_ptr<Matrix> Matrix::C_EmptyProductMatrix(Matrix &mat1, Matrix &mat2)
 
     if(!mat1.CheckDimension(THREE_DIMENSIONAL) || !mat2.CheckDimension(THREE_DIMENSIONAL)) {
         std::cout << "Matrix.cpp - [ERROR] - C_EmptyProductMatrix(Matrix &mat1, Matrix &mat2) function accepts 1 or 2-dimensional matrices, " 
-                  << mat1.matrixDimension << "-dimensional and " << mat2.matrixDimension << "-dimensional matrix provided.";
+                  << mat1.matrixDimension << "-dimensional and " << mat2.matrixDimension << "-dimensional matrix provided.\n";
         return std::shared_ptr<Matrix>();
     }
 
@@ -416,7 +433,7 @@ void Matrix::Product(Matrix &mat1, Matrix &mat2, Matrix &out) {
     if(!mat1.CheckDimension(THREE_DIMENSIONAL) || !mat2.CheckDimension(THREE_DIMENSIONAL) || !out.CheckDimension(THREE_DIMENSIONAL)) {
         std::cout << "Matrix.cpp - [ERROR] - Product(Matrix &mat1, Matrix &mat2, Matrix &out) function accepts 1 or 2-dimensional matrices, " 
                   << mat1.matrixDimension << "-dimensional, " << mat2.matrixDimension << "-dimensional, and "
-                  << out.matrixDimension << "-dimensional matrices provided.";
+                  << out.matrixDimension << "-dimensional matrices provided.\n";
         return;
     }
 
@@ -457,4 +474,9 @@ bool Matrix::CheckDimension(EDimension targetDimension) {
     if(targetDimension == matrixDimension)
         return true;
     return false;
+}
+
+std::ostream &operator<<(std::ostream &os, const Matrix &m) {
+    os << "(" << m.GetDepth() << ", " << m.GetRow() << ", " << m.GetCol() << ")";
+    return os;
 }
