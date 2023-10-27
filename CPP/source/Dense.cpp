@@ -14,11 +14,12 @@ void DenseLayer::InitializeLayer() {
 
     zOutputs = std::make_shared<Matrix>(outputCount, 1);
     aOutputs = std::make_shared<Matrix>(outputCount, 1);
+    aOutputsTranspose = Matrix::C_Transpose(*aOutputs.get());
 
     if(isInputLayer)
         dataIn = std::make_shared<Matrix>(inputWidth, 1);
     else
-        g_Activations.push_back(std::make_shared<Matrix>(inputHeight, inputWidth));
+        g_Activations = std::make_shared<Matrix>(inputHeight, inputWidth);
 
     NMath::InitializeWeights(initializer, distribution, *weights.get());
 
@@ -55,8 +56,17 @@ void DenseLayer::Backpropogation(Matrix &gradients) {
     NMath::dCdz(networkCost, activation, isOutputLayer, 
                 gradients, *aOutputs.get(), *zOutputs.get(), dCdz);
 
+    Matrix::Transpose(*aOutputs.get(), *aOutputsTranspose.get());
+    Matrix::AccumulateProduct(dCdz, *aOutputsTranspose.get(), *g_weights.get());
+    Matrix::Add(*g_biases.get(), dCdz, *g_biases.get());
+    Matrix::Product(*weightsTranspose.get(), dCdz, *g_Activations.get());
+    previousLayer->Backpropogation(*g_Activations.get());
+
 }
 
-void DenseLayer::ApplyGradients(float learningRate) {
-
+void DenseLayer::ApplyGradients(float learningRate, int batchSize) {
+    g_weights->Scale(learningRate * (1.0f / batchSize));
+    g_biases->Scale(learningRate * (1.0f / batchSize));
+    Matrix::Add(*weights.get(), *g_weights.get(), *weights.get());
+    Matrix::Add(*biases.get(), *g_biases.get(), *biases.get());
 }

@@ -55,6 +55,7 @@ public:
 
     static std::shared_ptr<Matrix> C_EmptyProductMatrix(Matrix &mat1, Matrix &mat2);
     static void Product(Matrix &mat1, Matrix &mat2, Matrix &out);
+    static void AccumulateProduct(Matrix &mat1, Matrix &mat2, Matrix &out);
 
     static bool IsEqualSize(Matrix &mat1, Matrix &mat2);
 

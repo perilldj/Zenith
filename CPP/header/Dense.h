@@ -22,6 +22,11 @@ public:
 
     virtual void Evaluate() override;
     virtual void Backpropogation(Matrix &gradients) override;
-    virtual void ApplyGradients(float learningRate) override;
+    virtual void ApplyGradients(float learningRate, int batchSize) override;
+
+private:
+
+    std::shared_ptr<Matrix> aOutputsTranspose;
+    std::shared_ptr<Matrix> weightsTranspose;
 
 };

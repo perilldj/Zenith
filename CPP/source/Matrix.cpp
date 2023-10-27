@@ -430,6 +430,37 @@ void Matrix::Product(Matrix &mat1, Matrix &mat2, Matrix &out) {
 }
 
 /*
+    void Matrix::AccumulateProduct(Matrix &mat1, Matrix &mat2, Matrix &out)
+    Description: Performs matrix multiplication and adds the result to the out matrix.
+*/
+
+void Matrix::AccumulateProduct(Matrix &mat1, Matrix &mat2, Matrix &out) {
+
+    if(mat1.CheckDimension(THREE_DIMENSIONAL) || mat2.CheckDimension(THREE_DIMENSIONAL) || out.CheckDimension(THREE_DIMENSIONAL)) {
+        std::cout << "Matrix.cpp - [ERROR] - Product(Matrix &mat1, Matrix &mat2, Matrix &out) function accepts 1 or 2-dimensional matrices, " 
+                  << mat1.matrixDimension << "-dimensional, " << mat2.matrixDimension << "-dimensional, and "
+                  << out.matrixDimension << "-dimensional matrices provided.\n";
+        return;
+    }
+
+    if(mat1.col != mat2.row) {
+        std::cout << "Matrix.cpp - [ERROR] - Matrix multiplication imposible with given matrices" << std::endl;
+        return;
+    }
+
+    for (int i = 0; i < mat1.row; i++) {
+        for (int j = 0; j < mat2.col; j++) {
+            float result = 0.0f;
+            for (int k = 0; k < mat1.col; k++) {
+                result += mat1.Get(i, k) * mat2.Get(k, j);
+            }
+            out.Set(i, j, out.Get(i, j) + result);
+        }
+    }
+
+}
+
+/*
     bool Matrix::IsEqualSize(Matrix &mat1, Matrix &mat2)
     Description: Checks if the two provided matrixes are the same size.
 */
