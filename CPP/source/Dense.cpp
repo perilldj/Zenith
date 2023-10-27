@@ -67,6 +67,6 @@ void DenseLayer::Backpropogation(Matrix &gradients) {
 void DenseLayer::ApplyGradients(float learningRate, int batchSize) {
     g_weights->Scale(learningRate * (1.0f / batchSize));
     g_biases->Scale(learningRate * (1.0f / batchSize));
-    Matrix::Add(*weights.get(), *g_weights.get(), *weights.get());
-    Matrix::Add(*biases.get(), *g_biases.get(), *biases.get());
+    Matrix::Subtract(*weights.get(), *g_weights.get(), *weights.get());
+    Matrix::Subtract(*biases.get(), *g_biases.get(), *biases.get());
 }

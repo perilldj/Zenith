@@ -53,6 +53,6 @@ public:
 
     virtual void Evaluate() {}
     virtual void Backpropogation(Matrix &gradients) {}
-    virtual void ApplyGradients(float learningRate) {}
+    virtual void ApplyGradients(float learningRate, int batchSize) {}
 
 };
