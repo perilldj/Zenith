@@ -57,7 +57,7 @@ private:
     std::vector<Datapoint> testingData;
 
     void SplitData();
-    void PrintNetworkStatus();
+    void PrintNetworkStructure();
 
 
 };

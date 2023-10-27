@@ -4,15 +4,32 @@ Network::Network() {
 
 }
 
+/*
+    void Network::SetInputShape(int d, int r, int c)
+    Description: Tells the neural network the shape of the input data.
+                        (depth, row, column) = (channels, height, width)
+*/
+
 void Network::SetInputShape(int d, int r, int c) {
     inputWidth = c; inputHeight = r; inputChannels = d;
 }
+
+/*
+    void Network::Evaluate(const py::array_t<float> &input, Matrix &result)
+    Description: Evaluates the neural network from the given input, stores the result
+                 in the provided "result" matrix passed by reference.
+*/
 
 void Network::Evaluate(const py::array_t<float> &input, Matrix &result) {
     layers[0]->SetInputData(input);
     layers[0]->Evaluate();
     Matrix::CopyData(*(layers.back()->aOutputs).get(), result);
 }
+
+/*
+    void Network::Dense(int nodeCount, EActivation activation)
+    Description: Adds a dense layer to the network.
+*/
 
 void Network::Dense(int nodeCount, EActivation activation) {
     std::shared_ptr<DenseLayer> layer = std::make_shared<DenseLayer>();
@@ -25,6 +42,11 @@ void Network::Dense(int nodeCount, EActivation activation) {
     layers.push_back(std::static_pointer_cast<Layer, DenseLayer>(layer));
     layerTypes.push_back(ELayer::Dense);
 }
+
+/*
+    void Network::Compile()
+    Description: Compiles the network.
+*/
 
 void Network::Compile() {
 
@@ -63,15 +85,27 @@ void Network::Compile() {
     }
 
     isNetworkCompiled = true;
-    PrintNetworkStatus();
+    PrintNetworkStructure();
     std::cout << "[INFO] Compilation Successful." << std::endl;
 
 }
+
+/*
+    void Network::AddDatapoint(py::array_t<float> &datapoint, int label)
+    Description: Adds a datapoint to the network's training testing pool. Must be
+                 done before compiling the network.
+*/
 
 void Network::AddDatapoint(py::array_t<float> &datapoint, int label) {
     Datapoint dp = Datapoint(datapoint, label);
     data.push_back(dp);
 }
+
+/*
+    Network::SplitData()
+    Description: Randomly places a datapoint in the training or testing pool,
+                 based on the chosen testing training split.
+*/
 
 void Network::SplitData() {
     trainingData.clear();
@@ -84,7 +118,12 @@ void Network::SplitData() {
         testingData.push_back(data[i]);
 }
 
-void Network::PrintNetworkStatus() {
+/*
+    void Network::PrintNetworkStatus()
+    Description: Prints the structure of the network to the screen.
+*/
+
+void Network::PrintNetworkStructure() {
     std::cout << "--------------- NETWORK STRUCTURE ---------------" << std::endl;
     std::cout << "Layer Type         Activation        Param Count " << std::endl;
     std::cout << "Input              N/A               0" << std::endl;
