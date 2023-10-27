@@ -103,6 +103,29 @@ std::shared_ptr<Matrix> Matrix::CreateMatrix(int depth, int row, int col) {
 }
 
 /*
+    int Matrix::AddData(py::array_t<float> data)
+    Description: Adds the information from the provided array into the matrix. Returns
+                 an index where the copy ended. If the index is less than the size of data, then
+                 the matrix was filled with values, and there was more elements in data. If it is
+                 the same size as the size of data, then the matrix was filled while using every element
+                 in data. A return index of -1 indicates that there weren't enough elements in index to
+                 add to every element in the matrix.
+*/
+
+int Matrix::AddData(py::array_t<float> data) {
+    int index = 0;
+    for(int i = 0; i < depth; i++)
+        for(int j = 0; j < row; j++)
+            for(int k = 0; k < col; k++) {
+                arr[i][j][k] = data.at(index);
+                index++;
+                if(index == data.size())
+                    return -1;
+            }
+    return index;
+}
+
+/*
     float Matrix::Get(int index)
     Description: Returns the value from a vector at the specified index.
 */

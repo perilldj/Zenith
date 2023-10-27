@@ -4,6 +4,9 @@
 #include <memory>
 #include <limits>
 
+#include <pybind11/numpy.h>
+namespace py = pybind11;
+
 enum EDimension {
     NULL_DIMENSIONAL,
     ONE_DIMENSIONAL,
@@ -23,6 +26,8 @@ public:
     static std::shared_ptr<Matrix> CreateMatrix(int length, bool isHorizontalVector);
     static std::shared_ptr<Matrix> CreateMatrix(int row, int col);
     static std::shared_ptr<Matrix> CreateMatrix(int depth, int row, int col);
+
+    int AddData(py::array_t<float> data);
 
     float Get(int index);
     float Get(int row, int col);
