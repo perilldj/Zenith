@@ -40,14 +40,14 @@ public:
     }
 
     virtual void SetInputShape(Layer &previousLayer) {
-        inputWidth = previousLayer.inputWidth; 
-        inputHeight = previousLayer.inputHeight; 
-        inputChannels = previousLayer.inputChannels;
+        inputWidth = previousLayer.outputWidth; 
+        inputHeight = previousLayer.outputHeight; 
+        inputChannels = previousLayer.outputChannels;
     }
 
-    //virtual void SetInputData(std::vector<float> dataIn) {
-        
-    //}
+    virtual void SetInputData(py::array_t<float> data) {
+        dataIn->AddData(data);
+    }
 
     virtual void InitializeLayer() {}
 

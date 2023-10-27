@@ -22,12 +22,13 @@ public:
     Matrix(int row_, int col_);
     Matrix(int depth_, int row_, int col_);
 
-    static std::shared_ptr<Matrix> CreateMatrix(const Matrix &m, bool copyElements);
+    static std::shared_ptr<Matrix> CreateMatrix(Matrix &m, bool copyElements);
     static std::shared_ptr<Matrix> CreateMatrix(int length, bool isHorizontalVector);
     static std::shared_ptr<Matrix> CreateMatrix(int row, int col);
     static std::shared_ptr<Matrix> CreateMatrix(int depth, int row, int col);
 
     int AddData(py::array_t<float> data);
+    static void CopyData(Matrix &copy, Matrix &out);
 
     float Get(int index);
     float Get(int row, int col);

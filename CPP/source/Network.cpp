@@ -4,13 +4,14 @@ Network::Network() {
 
 }
 
-void Network::SetInputShape(int w, int h, int c) {
-    inputWidth = w; inputHeight = h; inputChannels = c;
+void Network::SetInputShape(int d, int r, int c) {
+    inputWidth = c; inputHeight = r; inputChannels = d;
 }
 
-void Network::Evaluate(const std::vector<float> &input, Matrix &result) {
-    //layers[0]->SetInputData(input);
-    //layers[0]->Evaluate();
+void Network::Evaluate(const py::array_t<float> &input, Matrix &result) {
+    layers[0]->SetInputData(input);
+    layers[0]->Evaluate();
+    Matrix::CopyData(*(layers.back()->aOutputs).get(), result);
 }
 
 void Network::Dense(int nodeCount, EActivation activation) {
@@ -102,7 +103,7 @@ void Network::PrintNetworkStatus() {
     if(learningRateDecay)
         std::cout << "Learning Rate Decay: " << decayRate << std::endl;
     std::cout << "Epoch Count: " << totalEpochCount << std::endl;
-    std::cout << "Minibatch Size: " << minibatch << std::endl;
+    std::cout << "Minibatch Size: " << batchSize << std::endl;
     std::cout << "Training Testing Split: " << trainingTestingSplit << std::endl;
     std::cout << "-------------------------------------------------" << std::endl;
 }

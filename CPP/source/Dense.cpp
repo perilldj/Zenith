@@ -7,10 +7,14 @@ DenseLayer::DenseLayer() {
 
 void DenseLayer::InitializeLayer() {
 
-    weights = std::make_shared<Matrix>(outputCount, inputWidth);
-    g_weights = std::make_shared<Matrix>(outputCount, inputWidth);
+    outputWidth = 1;
+    outputHeight = outputCount;
+    outputChannels = 1;
+
+    weights = std::make_shared<Matrix>(outputCount, inputHeight);
+    g_weights = std::make_shared<Matrix>(outputCount, inputHeight);
     biases = std::make_shared<Matrix>(outputCount, 1);
-    g_biases = std::make_shared<Matrix>(outputCount, inputWidth);
+    g_biases = std::make_shared<Matrix>(outputCount, 1);
 
     zOutputs = std::make_shared<Matrix>(outputCount, 1);
     aOutputs = std::make_shared<Matrix>(outputCount, 1);

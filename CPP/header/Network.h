@@ -23,7 +23,7 @@ public:
     int inputWidth = 0, inputHeight = 0, inputChannels = 0;
 
     int totalEpochCount = 1;
-    int minibatch = 10;
+    int batchSize = 10;
     float trainingTestingSplit = 0.8f;
 
     ECost networkCost = ECost::MSE;
@@ -35,9 +35,9 @@ public:
 
     Network();
 
-    void SetInputShape(int w, int h, int c);
+    void SetInputShape(int d, int r, int c);
 
-    void Evaluate(const std::vector<float> &input, Matrix &result);
+    void Evaluate(const py::array_t<float> &data, Matrix &result);
 
     void TrainNetwork();
     void TestNetwork(bool print, bool save);

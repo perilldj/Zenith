@@ -60,17 +60,17 @@ Matrix::Matrix(int depth_, int row_, int col_) :
 }
 
 /*
-    std::shared_ptr<Matrix> Matrix::CreateMatrix(const Matrix &m, bool copyElements);
+    std::shared_ptr<Matrix> Matrix::CreateMatrix(Matrix &m, bool copyElements);
     Description: Creates a new matrix based on the matrix provided. The size will be equivalent,
                  and if copyElements is true, the elements will also be equivalent. If copyElements
                  is false, then the elements of the new matrix will remain as zero.
 */
 
-std::shared_ptr<Matrix> Matrix::CreateMatrix(const Matrix &m, bool copyElements) {
+std::shared_ptr<Matrix> Matrix::CreateMatrix(Matrix &m, bool copyElements) {
     std::shared_ptr<Matrix> result = CreateMatrix(m.depth, m.row, m.col);
     result->isHorizontalVector = m.isHorizontalVector;
     if(copyElements);
-        // perform copy soon
+        Matrix::CopyData(m, *result.get());
     return result;
 }
 
@@ -123,6 +123,26 @@ int Matrix::AddData(py::array_t<float> data) {
                     return -1;
             }
     return index;
+}
+
+/*
+    Matrix::CopyData(Matrix &copy, Matrix &out)
+    Description: Copies data from the provided "copy" matrix and stores the result in the provided
+                 "out" matrix. NOTE: Matrices must be of equal size.
+*/
+
+void Matrix::CopyData(Matrix &copy, Matrix &out) {
+    
+    if(!IsEqualSize(copy, out)) {
+        std::cout << "Matrix.cpp - [ERROR] - CopyData(Matrix &copy, Matrix &out) - Matrices are not of equal size." << std::endl;
+        return;
+    }
+
+    for(int i = 0; i < copy.depth; i++)
+        for(int j = 0; j < copy.row; j++)
+            for(int k = 0; k < copy.col; k++)
+                out.Set(i, j, k, copy.Get(i, j, k));
+
 }
 
 /*
@@ -460,7 +480,7 @@ void Matrix::Product(Matrix &mat1, Matrix &mat2, Matrix &out) {
 void Matrix::AccumulateProduct(Matrix &mat1, Matrix &mat2, Matrix &out) {
 
     if(mat1.CheckDimension(THREE_DIMENSIONAL) || mat2.CheckDimension(THREE_DIMENSIONAL) || out.CheckDimension(THREE_DIMENSIONAL)) {
-        std::cout << "Matrix.cpp - [ERROR] - Product(Matrix &mat1, Matrix &mat2, Matrix &out) function accepts 1 or 2-dimensional matrices, " 
+        std::cout << "Matrix.cpp - [ERROR] - AccumulateProduct(Matrix &mat1, Matrix &mat2, Matrix &out) function accepts 1 or 2-dimensional matrices, " 
                   << mat1.matrixDimension << "-dimensional, " << mat2.matrixDimension << "-dimensional, and "
                   << out.matrixDimension << "-dimensional matrices provided.\n";
         return;

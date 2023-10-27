@@ -6,12 +6,10 @@ namespace py = pybind11;
 struct Datapoint {
 
     Datapoint() {}
-    Datapoint(py::array_t<float> data_, int label_) {
-        for(int i = 0; i < data_.size(); i++)
-            data.push_back(data_.at(i));
-    }
+    Datapoint(py::array_t<float> data_, int label_) :
+        data(data_), label(label_) { }
 
-    std::vector<float> data;
+    py::array_t<float> data;
     int label;
 
 };
