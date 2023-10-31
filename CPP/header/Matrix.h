@@ -27,7 +27,8 @@ public:
     static std::shared_ptr<Matrix> CreateMatrix(int row, int col);
     static std::shared_ptr<Matrix> CreateMatrix(int depth, int row, int col);
 
-    int AddData(py::array_t<float> data);
+    int AddData(py::array_t<float> &data);
+    int AddData(std::vector<float> &data);
     static void CopyData(Matrix &copy, Matrix &out);
 
     float Get(int index);
@@ -53,6 +54,9 @@ public:
     void Scale(float s);
     static void Scale(float s, Matrix &mat, Matrix &out);
 
+    static bool Equals(Matrix &mat1, Matrix &mat2);
+    static bool EqualsWithinMargin(Matrix &mat1, Matrix &mat2, float delta);
+    
     static void Add(Matrix &mat1, Matrix &mat2, Matrix &out);
     static void Subtract(Matrix &mat1, Matrix &mat2, Matrix &out);
     static void ElementWiseMultiplication(Matrix &mat1, Matrix &mat2, Matrix &out);

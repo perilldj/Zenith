@@ -112,7 +112,7 @@ std::shared_ptr<Matrix> Matrix::CreateMatrix(int depth, int row, int col) {
                  add to every element in the matrix.
 */
 
-int Matrix::AddData(py::array_t<float> data) {
+int Matrix::AddData(py::array_t<float> &data) {
     int index = 0;
     for(int i = 0; i < depth; i++)
         for(int j = 0; j < row; j++)
@@ -120,6 +120,29 @@ int Matrix::AddData(py::array_t<float> data) {
                 if(index == data.size())
                     return -1;
                 arr[i][j][k] = data.at(index);
+                index++;
+            }
+    return index;
+}
+
+/*
+    int Matrix::AddData(std::vector<float> data)
+    Description: Adds the information from the provided array into the matrix. Returns
+                 an index where the copy ended. If the index is less than the size of data, then
+                 the matrix was filled with values, and there was more elements in data. If it is
+                 the same size as the size of data, then the matrix was filled while using every element
+                 in data. A return index of -1 indicates that there weren't enough elements in index to
+                 add to every element in the matrix.
+*/
+
+int Matrix::AddData(std::vector<float> &data) {
+    int index = 0;
+    for(int i = 0; i < depth; i++)
+        for(int j = 0; j < row; j++)
+            for(int k = 0; k < col; k++) {
+                if(index == data.size())
+                    return -1;
+                arr[i][j][k] = data[index];
                 index++;
             }
     return index;
@@ -283,6 +306,12 @@ float Matrix::MaxElement() {
     return max;
 }
 
+/*
+    float Matrix::MaxElement();
+    Description: Returns the largest value in the matrix, along with the
+                 index of the location of that value in the matrix.
+*/
+
 float Matrix::MaxElement(int &d, int &r, int &c) {
     float max = Get(0, 0, 0);
     for(int i = 0; i < GetDepth(); i++)
@@ -339,6 +368,47 @@ void Matrix::Scale(float s, Matrix &mat, Matrix &out) {
         for(int j = 0; j < mat.row; j++)
             for(int k = 0; k < mat.col; k++)
                 out.Set(i, j, k, mat.Get(i, j, k) * s);
+}
+
+/*
+    bool Matrix::Equals(Matrix &mat1, Matrix &mat2)
+    Description: Returns true if both provided matrices are identical, false otherwise.
+*/
+
+bool Matrix::Equals(Matrix &mat1, Matrix &mat2) {
+
+    if(!IsEqualSize(mat1, mat2))
+        return false;
+
+    for(int i = 0; i < mat1.depth; i++)
+        for(int j = 0; j < mat1.row; j++)
+            for(int k = 0; k < mat1.col; k++)
+                if(mat1.arr[i][j][k] != mat2.arr[i][j][k])
+                    return false;
+
+    return true;
+
+}
+
+/*
+    bool Matrix::EqualsWithinMargin(Matrix &mat1, Matrix &mat2, float delta)
+    Description: Returns true if both provided matrices are identical, values may differ
+                 within the provided delta value.
+*/
+
+bool Matrix::EqualsWithinMargin(Matrix &mat1, Matrix &mat2, float delta) {
+
+    if(!IsEqualSize(mat1, mat2))
+        return false;
+
+    for(int i = 0; i < mat1.depth; i++)
+        for(int j = 0; j < mat1.row; j++)
+            for(int k = 0; k < mat1.col; k++)
+                if(std::abs(mat1.arr[i][j][k] - mat2.arr[i][j][k]) > delta)
+                    return false;
+
+    return true;
+
 }
 
 /*

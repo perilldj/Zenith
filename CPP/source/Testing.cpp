@@ -1,7 +1,262 @@
 #include "../header/Testing.h"
 
-void Testing::RunTest() {
-    
+bool Testing::RunTest() {
+    bool isTestSuccessful = true;
+    std::cout << "[EXEC] - Running Full Test" << std::endl;
+    bool result = ( ActivationTest()            & 
+                    ActivationDerivativeTest()    );
+    std::cout << '[' << ((result) ? "PASS" : "FAIL") << "] - Full Test" << std::endl;       
+    return isTestSuccessful;
+}
+
+bool Testing::ActivationTest() {
+    std::cout << "[EXEC] - Running Activation Function Test" << std::endl;
+    bool result = ( SigmoidTest()   &
+                    TanhTest()      &
+                    ReLUTest()      &
+                    LeakyReLUTest() &
+                    SiLUTest()      &
+                    SoftplusTest()  &
+                    SoftmaxTest()     );
+    std::cout << '[' << ((result) ? "PASS" : "FAIL") << "] - Activation Function Test" << std::endl;
+    return result;
+}
+
+bool Testing::SigmoidTest() {
+    bool result = true;
+    std::vector<float> inputs   = { 0.0f, 0.5f, 1.0f, 10.0f, -0.5f, -1.0f, -10.0f };
+    std::shared_ptr<Matrix> mInputs = Matrix::CreateMatrix(inputs.size(), false);
+    mInputs->AddData(inputs);
+    std::vector<float> expected = { 0.5f, 0.6224593f, 0.7310586f, 0.9999546f, 
+                                    0.3775407f, 0.2689414f, 0.0000454f };
+    std::shared_ptr<Matrix> mExpected = Matrix::CreateMatrix(expected.size(), false);
+    std::shared_ptr<Matrix> mActual = Matrix::CreateMatrix(*mInputs.get(), false);
+    mExpected->AddData(expected);
+    NMath::Activation(EActivation::Sigmoid, *mInputs.get(), *mActual.get());
+    result = Matrix::EqualsWithinMargin(*mActual.get(), *mExpected.get(), 0.01f);
+    std::cout << '[' << ((result) ? "PASS" : "FAIL") << "] - Sigmoid" << std::endl;
+    return result;
+}
+
+bool Testing::TanhTest() {
+    bool result = true;
+    std::vector<float> inputs   = { 0.0f, 0.5f, 1.0f, 10.0f, -0.5f, -1.0f, -10.0f };
+    std::shared_ptr<Matrix> mInputs = Matrix::CreateMatrix(inputs.size(), false);
+    mInputs->AddData(inputs);
+    std::vector<float> expected = { 0.0f, 0.462117, 0.761594, 0.999999f, 
+                                    -0.462117, -0.761594, -0.999999f };
+    std::shared_ptr<Matrix> mExpected = Matrix::CreateMatrix(expected.size(), false);
+    std::shared_ptr<Matrix> mActual = Matrix::CreateMatrix(*mInputs.get(), false);
+    mExpected->AddData(expected);
+    NMath::Activation(EActivation::Tanh, *mInputs.get(), *mActual.get());
+    result = Matrix::EqualsWithinMargin(*mActual.get(), *mExpected.get(), 0.01f);
+    std::cout << '[' << ((result) ? "PASS" : "FAIL") << "] - Tanh" << std::endl;
+    return result;
+}
+
+bool Testing::ReLUTest() {
+    bool result = true;
+    std::vector<float> inputs   = { 0.0f, 0.5f, 1.0f, 10.0f, -0.5f, -1.0f, -10.0f };
+    std::shared_ptr<Matrix> mInputs = Matrix::CreateMatrix(inputs.size(), false);
+    mInputs->AddData(inputs);
+    std::vector<float> expected = { 0.0f, 0.5f, 1.0f, 10.0f, 0.0f, 0.0f, 0.0f };
+    std::shared_ptr<Matrix> mExpected = Matrix::CreateMatrix(expected.size(), false);
+    std::shared_ptr<Matrix> mActual = Matrix::CreateMatrix(*mInputs.get(), false);
+    mExpected->AddData(expected);
+    NMath::Activation(EActivation::ReLU, *mInputs.get(), *mActual.get());
+    result = Matrix::EqualsWithinMargin(*mActual.get(), *mExpected.get(), 0.01f);
+    std::cout << '[' << ((result) ? "PASS" : "FAIL") << "] - ReLU" << std::endl;
+    return result;
+}
+
+bool Testing::LeakyReLUTest(){
+    bool result = true;
+    std::vector<float> inputs   = { 0.0f, 0.5f, 1.0f, 10.0f, -0.5f, -1.0f, -10.0f };
+    std::shared_ptr<Matrix> mInputs = Matrix::CreateMatrix(inputs.size(), false);
+    mInputs->AddData(inputs);
+    std::vector<float> expected = { 0.0f, 0.5f, 1.0f, 10.0f, 
+                                    -0.005f, -0.01f, -0.1f };
+    std::shared_ptr<Matrix> mExpected = Matrix::CreateMatrix(expected.size(), false);
+    std::shared_ptr<Matrix> mActual = Matrix::CreateMatrix(*mInputs.get(), false);
+    mExpected->AddData(expected);
+    NMath::Activation(EActivation::LeakyReLU, *mInputs.get(), *mActual.get());
+    result = Matrix::EqualsWithinMargin(*mActual.get(), *mExpected.get(), 0.01f);
+    std::cout << '[' << ((result) ? "PASS" : "FAIL") << "] - Leaky ReLU" << std::endl;
+    return result;
+}
+
+bool Testing::SiLUTest() {
+    bool result = true;
+    std::vector<float> inputs   = { 0.0f, 0.5f, 1.0f, 10.0f, -0.5f, -1.0f, -10.0f };
+    std::shared_ptr<Matrix> mInputs = Matrix::CreateMatrix(inputs.size(), false);
+    mInputs->AddData(inputs);
+    std::vector<float> expected = { 0.0f, 0.3112296f, 0.7310586f, 9.999546f, 
+                                    -0.18877035f, -0.2689414f, 0.0000454f };
+    std::shared_ptr<Matrix> mExpected = Matrix::CreateMatrix(expected.size(), false);
+    std::shared_ptr<Matrix> mActual = Matrix::CreateMatrix(*mInputs.get(), false);
+    mExpected->AddData(expected);
+    NMath::Activation(EActivation::SiLU, *mInputs.get(), *mActual.get());
+    result = Matrix::EqualsWithinMargin(*mActual.get(), *mExpected.get(), 0.01f);
+    std::cout << '[' << ((result) ? "PASS" : "FAIL") << "] - SiLU" << std::endl;
+    return result;
+}
+
+bool Testing::SoftplusTest() {
+    bool result = true;
+    std::vector<float> inputs   = { 0.0f, 0.5f, 1.0f, 10.0f, -0.5f, -1.0f, -10.0f };
+    std::shared_ptr<Matrix> mInputs = Matrix::CreateMatrix(inputs.size(), false);
+    mInputs->AddData(inputs);
+    std::vector<float> expected = { 0.69314f, 0.97407f, 1.31326f, 10.00004f, 
+                                    0.47407f, 0.313261f, 0.0000454f };
+    std::shared_ptr<Matrix> mExpected = Matrix::CreateMatrix(expected.size(), false);
+    std::shared_ptr<Matrix> mActual = Matrix::CreateMatrix(*mInputs.get(), false);
+    mExpected->AddData(expected);
+    NMath::Activation(EActivation::Softplus, *mInputs.get(), *mActual.get());
+    result = Matrix::EqualsWithinMargin(*mActual.get(), *mExpected.get(), 0.01f);
+    std::cout << '[' << ((result) ? "PASS" : "FAIL") << "] - Softplus" << std::endl;
+    return result;
+}
+
+bool Testing::SoftmaxTest() {
+    bool result = true;
+    std::vector<float> inputs   = { 0.0f, 0.5f, 1.0f, 2.0f, -0.7f, -1.0f, -0.1f };
+    std::shared_ptr<Matrix> mInputs = Matrix::CreateMatrix(inputs.size(), false);
+    mInputs->AddData(inputs);
+    std::vector<float> expected = { 0.06884f, 0.1135f, 0.1871f, 0.50867f, 
+                                    0.03418f, 0.025325f, 0.06229f };
+    std::shared_ptr<Matrix> mExpected = Matrix::CreateMatrix(expected.size(), false);
+    std::shared_ptr<Matrix> mActual = Matrix::CreateMatrix(*mInputs.get(), false);
+    mExpected->AddData(expected);
+    NMath::Activation(EActivation::Softmax, *mInputs.get(), *mActual.get());
+    result = Matrix::EqualsWithinMargin(*mActual.get(), *mExpected.get(), 0.01f);
+    std::cout << '[' << ((result) ? "PASS" : "FAIL") << "] - Softmax" << std::endl;
+    return result;
+}
+
+bool Testing::ActivationDerivativeTest() {
+    std::cout << "[EXEC] - Running Activation Function Derivative Test" << std::endl;
+    bool result = ( dSigmoidTest()   &
+                    dTanhTest()      &
+                    dReLUTest()      &
+                    dLeakyReLUTest() &
+                    dSiLUTest()      &
+                    dSoftplusTest()  &
+                    dSoftmaxTest()     );
+    std::cout << '[' << ((result) ? "PASS" : "FAIL") << "] - Activation Function Derivative Test" << std::endl;
+    return result;
+}
+
+bool Testing::dSigmoidTest() {
+    bool result = true;
+    std::vector<float> inputs   = { 0.0f, 0.5f, 1.0f, 10.0f, -0.5f, -1.0f, -10.0f };
+    std::shared_ptr<Matrix> mInputs = Matrix::CreateMatrix(inputs.size(), false);
+    mInputs->AddData(inputs);
+    std::vector<float> expected = { 0.25f, 0.235003f, 0.196611f, 0.0000454f, 
+                                    0.235003f, 0.196611f, 0.0000454f };
+    std::shared_ptr<Matrix> mExpected = Matrix::CreateMatrix(expected.size(), false);
+    std::shared_ptr<Matrix> mActual = Matrix::CreateMatrix(*mInputs.get(), false);
+    mExpected->AddData(expected);
+    NMath::ActivationGradient(EActivation::Sigmoid, *mInputs.get(), *mActual.get());
+    result = Matrix::EqualsWithinMargin(*mActual.get(), *mExpected.get(), 0.01f);
+    std::cout << '[' << ((result) ? "PASS" : "FAIL") << "] - Sigmoid Derivative" << std::endl;
+    return result;
+}
+
+bool Testing::dTanhTest() {
+    bool result = true;
+    std::vector<float> inputs   = { 0.0f, 0.5f, 1.0f, 10.0f, -0.5f, -1.0f, -10.0f };
+    std::shared_ptr<Matrix> mInputs = Matrix::CreateMatrix(inputs.size(), false);
+    mInputs->AddData(inputs);
+    std::vector<float> expected = { 1.0f, 0.78644f, 0.419974f, 0.0f, 
+                                    0.78644f, 0.419974f, 0.0f };
+    std::shared_ptr<Matrix> mExpected = Matrix::CreateMatrix(expected.size(), false);
+    std::shared_ptr<Matrix> mActual = Matrix::CreateMatrix(*mInputs.get(), false);
+    mExpected->AddData(expected);
+    NMath::ActivationGradient(EActivation::Tanh, *mInputs.get(), *mActual.get());
+    result = Matrix::EqualsWithinMargin(*mActual.get(), *mExpected.get(), 0.01f);
+    std::cout << '[' << ((result) ? "PASS" : "FAIL") << "] - Tanh Derivative" << std::endl;
+    return result;
+}
+
+bool Testing::dReLUTest() {
+    bool result = true;
+    std::vector<float> inputs   = { 0.0f, 0.5f, 1.0f, 10.0f, -0.5f, -1.0f, -10.0f };
+    std::shared_ptr<Matrix> mInputs = Matrix::CreateMatrix(inputs.size(), false);
+    mInputs->AddData(inputs);
+    std::vector<float> expected = { 0.0f, 1.0f, 1.0f, 1.0f, 0.0f, 0.0f, 0.0f };
+    std::shared_ptr<Matrix> mExpected = Matrix::CreateMatrix(expected.size(), false);
+    std::shared_ptr<Matrix> mActual = Matrix::CreateMatrix(*mInputs.get(), false);
+    mExpected->AddData(expected);
+    NMath::ActivationGradient(EActivation::ReLU, *mInputs.get(), *mActual.get());
+    result = Matrix::EqualsWithinMargin(*mActual.get(), *mExpected.get(), 0.01f);
+    std::cout << '[' << ((result) ? "PASS" : "FAIL") << "] - ReLU Derivative" << std::endl;
+    return result;
+}
+
+bool Testing::dLeakyReLUTest() {
+    bool result = true;
+    std::vector<float> inputs   = { 0.0f, 0.5f, 1.0f, 10.0f, -0.5f, -1.0f, -10.0f };
+    std::shared_ptr<Matrix> mInputs = Matrix::CreateMatrix(inputs.size(), false);
+    mInputs->AddData(inputs);
+    std::vector<float> expected = { 0.01f, 1.0f, 1.0f, 1.0f, 0.01f, 0.01f, 0.01f };
+    std::shared_ptr<Matrix> mExpected = Matrix::CreateMatrix(expected.size(), false);
+    std::shared_ptr<Matrix> mActual = Matrix::CreateMatrix(*mInputs.get(), false);
+    mExpected->AddData(expected);
+    NMath::ActivationGradient(EActivation::LeakyReLU, *mInputs.get(), *mActual.get());
+    result = Matrix::EqualsWithinMargin(*mActual.get(), *mExpected.get(), 0.01f);
+    std::cout << '[' << ((result) ? "PASS" : "FAIL") << "] - Leaky ReLU Derivative" << std::endl;
+    return result;
+}
+
+bool Testing::dSiLUTest() {
+    bool result = true;
+    std::vector<float> inputs   = { 0.0f, 0.5f, 1.0f, 10.0f, -0.5f, -1.0f, -10.0f };
+    std::shared_ptr<Matrix> mInputs = Matrix::CreateMatrix(inputs.size(), false);
+    mInputs->AddData(inputs);
+    std::vector<float> expected = { 0.5f, 0.73996f, 0.92767f, 1.0f, 0.26003f, 0.07232f, -0.0004f };
+    std::shared_ptr<Matrix> mExpected = Matrix::CreateMatrix(expected.size(), false);
+    std::shared_ptr<Matrix> mActual = Matrix::CreateMatrix(*mInputs.get(), false);
+    mExpected->AddData(expected);
+    NMath::ActivationGradient(EActivation::SiLU, *mInputs.get(), *mActual.get());
+    result = Matrix::EqualsWithinMargin(*mActual.get(), *mExpected.get(), 0.01f);
+    std::cout << '[' << ((result) ? "PASS" : "FAIL") << "] - SiLU Derivative" << std::endl;
+    return result;
+}
+
+bool Testing::dSoftplusTest() {
+    bool result = true;
+    std::vector<float> inputs   = { 0.0f, 0.5f, 1.0f, 10.0f, -0.5f, -1.0f, -10.0f };
+    std::shared_ptr<Matrix> mInputs = Matrix::CreateMatrix(inputs.size(), false);
+    mInputs->AddData(inputs);
+    std::vector<float> expected = { 0.5f, 0.6224593f, 0.7310586f, 0.9999546f, 
+                                    0.3775407f, 0.2689414f, 0.0000454f };
+    std::shared_ptr<Matrix> mExpected = Matrix::CreateMatrix(expected.size(), false);
+    std::shared_ptr<Matrix> mActual = Matrix::CreateMatrix(*mInputs.get(), false);
+    mExpected->AddData(expected);
+    NMath::ActivationGradient(EActivation::Softplus, *mInputs.get(), *mActual.get());
+    result = Matrix::EqualsWithinMargin(*mActual.get(), *mExpected.get(), 0.01f);
+    std::cout << '[' << ((result) ? "PASS" : "FAIL") << "] - Softplus Derivative" << std::endl;
+    return result;
+}
+
+bool Testing::dSoftmaxTest() {
+    bool result = true;
+    std::vector<float> inputs   = { 0.0f, 0.5f, 1.0f, 2.0f, -0.7f, -1.0f, -0.1f };
+    std::shared_ptr<Matrix> mInputs = Matrix::CreateMatrix(inputs.size(), false);
+    mInputs->AddData(inputs);
+    std::vector<float> expected = { 0.064105f, 0.10062f, 0.15211f, 0.24992f, 
+                                    0.033018f, 0.024685f, 0.058413f };
+    std::shared_ptr<Matrix> mExpected = Matrix::CreateMatrix(expected.size(), false);
+    std::shared_ptr<Matrix> mActual = Matrix::CreateMatrix(*mInputs.get(), false);
+    mExpected->AddData(expected);
+    NMath::ActivationGradient(EActivation::Softmax, *mInputs.get(), *mActual.get());
+    result = Matrix::EqualsWithinMargin(*mActual.get(), *mExpected.get(), 0.01f);
+    std::cout << '[' << ((result) ? "PASS" : "FAIL") << "] - Softmax Derivative" << std::endl;
+    return result;
+}
+
+void Testing::MatrixTest() {
+
     Matrix mat10x1 = Matrix(10, false);
     Matrix mat1x10 = Matrix(10, true);
     Matrix mat2D = Matrix(10, 10);

@@ -6,7 +6,11 @@ import time
 import numpy as np
 
 def main() :
- 
+
+     
+    Zenith.RunTest()
+
+
     print('Loading Dataset...')
 
     # Get the current directory
