@@ -22,6 +22,7 @@ public:
 
     std::shared_ptr<Matrix> zOutputs;
     std::shared_ptr<Matrix> aOutputs;
+    std::shared_ptr<Matrix> aOutputsTranspose;
     std::shared_ptr<Matrix> dataIn;
 
     std::shared_ptr<Matrix> g_Activations;

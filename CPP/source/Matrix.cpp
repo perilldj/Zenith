@@ -117,10 +117,10 @@ int Matrix::AddData(py::array_t<float> data) {
     for(int i = 0; i < depth; i++)
         for(int j = 0; j < row; j++)
             for(int k = 0; k < col; k++) {
-                arr[i][j][k] = data.at(index);
-                index++;
                 if(index == data.size())
                     return -1;
+                arr[i][j][k] = data.at(index);
+                index++;
             }
     return index;
 }
@@ -281,7 +281,18 @@ float Matrix::MaxElement() {
                 if(Get(i, j, k) > max)
                     max = Get(i, j, k);
     return max;
-    return 0.0f;
+}
+
+float Matrix::MaxElement(int &d, int &r, int &c) {
+    float max = Get(0, 0, 0);
+    for(int i = 0; i < GetDepth(); i++)
+        for(int j = 0; j < GetRow(); j++)
+            for(int k = 0; k < GetCol(); k++)
+                if(Get(i, j, k) > max) {
+                    max = Get(i, j, k);
+                    d = i; r = j; c = k;
+                }
+    return max;
 }
 
 /*
@@ -318,8 +329,12 @@ void Matrix::Scale(float s) {
 */
 
 void Matrix::Scale(float s, Matrix &mat, Matrix &out) {
-    if(!IsEqualSize(mat, out))
+    if(!IsEqualSize(mat, out)) {
+        std::cout << "Matrix.cpp - [ERROR] - Scale(float s, Matrix &mat, Matrix &out) - Provided"
+                  << " matrices are not of equal size." << std::endl;
         return;
+    }
+
     for(int i = 0; i < mat.depth; i++)
         for(int j = 0; j < mat.row; j++)
             for(int k = 0; k < mat.col; k++)
@@ -333,8 +348,12 @@ void Matrix::Scale(float s, Matrix &mat, Matrix &out) {
 */
 
 void Matrix::Add(Matrix &mat1, Matrix &mat2, Matrix &out) {
-    if(!IsEqualSize(mat1, mat2) || !IsEqualSize(mat2, out))
+    if(!IsEqualSize(mat1, mat2) || !IsEqualSize(mat2, out)) {
+        std::cout << "Matrix.cpp - [ERROR] - Add(Matrix &mat1, Matrix &mat2, Matrix &out) - Provided"
+                  << " matrices are not of equal size." << std::endl;
         return;
+    }
+
     for(int i = 0; i < mat1.depth; i++)
         for(int j = 0; j < mat1.row; j++)
             for(int k = 0; k < mat1.col; k++)
@@ -348,8 +367,12 @@ void Matrix::Add(Matrix &mat1, Matrix &mat2, Matrix &out) {
 */
 
 void Matrix::Subtract(Matrix &mat1, Matrix &mat2, Matrix &out) {
-    if(!IsEqualSize(mat1, mat2) || !IsEqualSize(mat2, out))
+    if(!IsEqualSize(mat1, mat2) || !IsEqualSize(mat2, out)) {
+        std::cout << "Matrix.cpp - [ERROR] - Subtract(Matrix &mat1, Matrix &mat2, Matrix &out) - Provided"
+                  << " matrices are not of equal size." << std::endl;
         return;
+    }
+
     for(int i = 0; i < mat1.depth; i++)
         for(int j = 0; j < mat1.row; j++)
             for(int k = 0; k < mat1.col; k++)
@@ -365,8 +388,11 @@ void Matrix::Subtract(Matrix &mat1, Matrix &mat2, Matrix &out) {
 */
 
 void Matrix::ElementWiseMultiplication(Matrix &mat1, Matrix &mat2, Matrix &out) {
-    if(!IsEqualSize(mat1, mat2) || !IsEqualSize(mat2, out))
+    if(!IsEqualSize(mat1, mat2) || !IsEqualSize(mat2, out)) {
+        std::cout << "Matrix.cpp - [ERROR] - ElementWiseMultiplication(Matrix &mat1, Matrix &mat2, Matrix &out) - Provided"
+                  << " matrices are not of equal size." << std::endl;
         return;
+    }
     for(int i = 0; i < mat1.depth; i++)
         for(int j = 0; j < mat1.row; j++)
             for(int k = 0; k < mat1.col; k++)
@@ -408,7 +434,7 @@ void Matrix::Transpose(Matrix &mat, Matrix &out) {
         return;
     }
 
-    if(!IsEqualSize(mat, out))
+    if(mat.row != out.col || out.row != mat.col)
         return;
 
     for(int i = 0; i < out.row; i++)

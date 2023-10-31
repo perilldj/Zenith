@@ -13,6 +13,9 @@ public:
     std::shared_ptr<Matrix> biases;
     std::shared_ptr<Matrix> g_biases;
 
+    std::shared_ptr<Matrix> dataInTranspose;
+    std::shared_ptr<Matrix> weightsTranspose;
+
     DenseLayer();
 
     virtual void InitializeLayer() override;
@@ -23,10 +26,5 @@ public:
     virtual void Evaluate() override;
     virtual void Backpropogation(Matrix &gradients) override;
     virtual void ApplyGradients(float learningRate, int batchSize) override;
-
-private:
-
-    std::shared_ptr<Matrix> aOutputsTranspose;
-    std::shared_ptr<Matrix> weightsTranspose;
 
 };

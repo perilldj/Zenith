@@ -31,6 +31,14 @@ def main() :
 
     network = Zenith.Network()
 
+    for index, i in enumerate(x_train) :
+        for index, j in enumerate(i) :
+            i[index] = i[index] / 255
+
+    for i in (x_test) :
+        for index, j in enumerate(i) :
+            i[index] = i[index] / 255
+
     for i, j in enumerate(x_train) :
         network.AddDatapoint(x_train[i], y_train[i])
     for i, j in enumerate(x_test) :
@@ -38,12 +46,20 @@ def main() :
 
     network.SetInputShape(1, 784, 1)
 
-    network.Dense(250, Zenith.EActivation.Sigmoid)
-    network.Dense(75, Zenith.EActivation.Softmax)
+    network.Dense(10, Zenith.EActivation.Softmax)
 
     network.Cost = Zenith.ECost.CrossEntropy
+    network.Initializer = Zenith.EInitialization.Kaiming
+    network.Distribution = Zenith.EDistribution.Normal
+
+    network.DoLearningRateDecay = True
+    network.DecayRate = 0.1
+    network.LearningRate = 0.01
+    network.Epochs = 100
+    network.BatchSize = 40
 
     network.Compile()
+    network.Train()
 
 def unpickle(file):
     import pickle

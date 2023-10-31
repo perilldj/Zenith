@@ -41,7 +41,7 @@ void NMath::EvaluateFunctionOverMatrix(float (*func)(const float&), Matrix &mat,
 
 void NMath::Activation(EActivation activation, Matrix &mat, Matrix &out) {
 
-    if(mat.GetCol() == out.GetCol() && mat.GetRow() == out.GetCol()) {
+    if(mat.GetCol() != out.GetCol() || mat.GetRow() != out.GetRow()) {
         std::cout << "NMath.cpp - [ERROR] - Activation function input and output matrices are of different sizes." << std::endl;
         return;
     }
@@ -99,7 +99,7 @@ void NMath::Activation(EActivation activation, Matrix &mat, Matrix &out) {
 
 void NMath::ActivationGradient(EActivation activation, Matrix &mat, Matrix &out) {
 
-    if(mat.GetCol() == out.GetCol() && mat.GetRow() == out.GetCol()) {
+    if(mat.GetCol() != out.GetCol() || mat.GetRow() != out.GetRow()) {
         std::cout << "NMath.cpp - [ERROR] - Activation gradient input and output matrices are of different sizes." << std::endl;
         return;
     }
@@ -198,7 +198,7 @@ float NMath::Cost(ECost cost, Matrix &expected, Matrix &actual) {
     
 void NMath::CostGradient(ECost cost, Matrix &expected, Matrix &actual, Matrix &out) {
 
-    if(!Matrix::IsEqualSize(expected, actual) && !Matrix::IsEqualSize(actual, out)) {
+    if(!Matrix::IsEqualSize(expected, actual) || !Matrix::IsEqualSize(actual, out)) {
         std::cout << "NMath.cpp - [ERROR] - Cost gradient matrices sizes are of different sizes." << std::endl;
         return;
     }
@@ -291,7 +291,7 @@ float NMath::CalculateInitializerValue(EInitialization initializer, int incoming
     case EInitialization::Random :
         return 1.0f;
 
-    case EInitialization::Kaiming :
+    case EInitialization::Kaiming : // Incorrect for uniform distributions
         return std::sqrt(2.0f / (float) incomingConnections);
 
     case EInitialization::Xavier :

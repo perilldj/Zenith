@@ -122,6 +122,8 @@ public:
     static float RandomNormalFloat(float mean, float stdDev);
 
     static void InitializeWeights(EInitialization initializer, EDistribution distribution, Matrix &mat);
+    
+    static void PrintProgressBar(float progress, float total, int width);
 
 private:
 
@@ -129,8 +131,6 @@ private:
     static void InitializeNormalWeights(EInitialization initializer, Matrix &mat);
 
     static float CalculateInitializerValue(EInitialization initializer, int incomingConnections, int outgoingConnections);
-
-    static void PrintProgressBar(float progress, float total, int width);
 
     static std::random_device rd;
     static std::mt19937 u_gen;

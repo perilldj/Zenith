@@ -65,6 +65,7 @@ PYBIND11_MODULE(Zenith, handle) {
         .def("AddDatapoint",    &Network::AddDatapoint)
         .def("SetInputShape",   &Network::SetInputShape)
         .def("Compile",         &Network::Compile)
+        .def("Train",           &Network::Train)
 
     ;
 

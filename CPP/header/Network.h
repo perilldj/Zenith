@@ -39,12 +39,12 @@ public:
 
     void Evaluate(const py::array_t<float> &data, Matrix &result);
 
-    void TrainNetwork();
-    void TestNetwork(bool print, bool save);
-
     void Dense(int nodeCount, EActivation activation);
 
     void Compile();
+
+    void Train();
+    void Test(bool print, bool save);
 
     void AddDatapoint(py::array_t<float> &datapoint, int label);
 

@@ -43,6 +43,7 @@ public:
     void Fill(float val);
     void Clear();
     float MaxElement();
+    float MaxElement(int &d, int &r, int &c);
     float MinElement();
 
     inline int GetDepth() const { return depth; }

@@ -50,6 +50,8 @@ void Network::Dense(int nodeCount, EActivation activation) {
 
 void Network::Compile() {
 
+    currentLearningRate = initialLearningRate;
+
     std::cout << "\n[INFO] Compiling Network..." << std::endl;
     if(disableCompilation)
         return;
@@ -77,16 +79,130 @@ void Network::Compile() {
         else
             layers[i]->SetInputShape(*layers[i - 1].get());
 
-        layers[i]->InitializeLayer();
+        if(!layers[i]->isInputLayer) {
+            layers[i - 1]->nextLayer = layers[i];
+            layers[i]->previousLayer = layers[i - 1];
+        }
+
         layers[i]->networkCost = networkCost;
         layers[i]->initializer = networkInitializer;
         layers[i]->distribution = networkDistribution;
+        layers[i]->InitializeLayer();
 
     }
+
+    layers.back()->isOutputLayer = true;
 
     isNetworkCompiled = true;
     PrintNetworkStructure();
     std::cout << "[INFO] Compilation Successful." << std::endl;
+
+}
+
+/*
+    void Network::Train()
+    Description: Train the neural network
+*/
+
+void Network::Train() {
+
+    std::cout << "[INFO] - Beggining Training..." << std::endl;
+
+    Test(true, false);
+
+    Matrix result = Matrix(*(layers.back()->aOutputs).get());
+    Matrix costGradient = Matrix(*(layers.back()->aOutputs).get());
+    Matrix oneHotVector = Matrix(*(layers.back()->aOutputs).get());
+
+    int epochCount = 0;
+    while(epochCount < totalEpochCount) {
+
+        /* Run epoch */
+        int batchIndex = 0;
+        while(batchIndex < trainingData.size() - batchSize - 1) {
+
+            /* Batch Eval/Backprop */
+            for(int i = batchIndex; i < batchIndex + batchSize; i++) {
+
+                oneHotVector.Clear();
+                oneHotVector.Set(trainingData[i].label, 1.0f);
+                Evaluate(trainingData[i].data, result);
+                NMath::CostGradient(networkCost, oneHotVector, result, costGradient);
+                layers.back()->Backpropogation(costGradient);
+
+            }
+
+            /* Apply gradients */
+            for(int i = 0; i < layers.size(); i++)
+                layers[i]->ApplyGradients(currentLearningRate, batchSize);
+
+            batchIndex += batchSize;
+
+            NMath::PrintProgressBar(batchIndex, trainingData.size(), 50);
+
+        }
+
+        NMath::PrintProgressBar(trainingData.size(), trainingData.size(), 50);
+        std::cout << std::endl;
+
+        epochCount++;
+        if(learningRateDecay)
+            DecayLearningRate(epochCount);
+
+        /* Run test */
+        Test(true, false);
+
+    }
+
+    std::cout << "[INFO] - Training Complete." << std::endl;
+
+}
+
+void Network::Test(bool print, bool save) {
+
+    std::cout << "[INFO] - Conducting Test..." << std::endl;
+
+    Matrix result = Matrix(*(layers.back()->aOutputs).get());
+    Matrix oneHotVector = Matrix(*(layers.back()->aOutputs).get());
+
+    int correct = 0;
+    float cost = 0.0f;
+    int d, r, c;
+/*
+    for(int i = 0; i < trainingData.size(); i++) {
+
+        oneHotVector.Clear();
+        oneHotVector.Set(trainingData[i].label, 1.0f);
+        Evaluate(trainingData[i].data, result);
+        cost += NMath::Cost(networkCost, oneHotVector, result);
+        result.MaxElement(d, r, c);
+        if(trainingData[i].label == r)
+            correct++;
+
+    }
+
+    std::cout << "[INFO] - Train Results" << std::endl;
+    std::cout << "Cost: " << ((float)cost / (float)trainingData.size()) << std::endl;
+    std::cout << "Accuracy: " << ((float)correct / (float)trainingData.size()) << std::endl;
+
+    correct = 0;
+    cost = 0.0f; */
+
+    for(int i = 0; i < testingData.size(); i++) {
+
+        oneHotVector.Clear();
+        oneHotVector.Set(testingData[i].label, 1.0f);
+        Evaluate(testingData[i].data, result);
+        cost += NMath::Cost(networkCost, oneHotVector, result);
+        result.MaxElement(d, r, c);
+        if(testingData[i].label == r)
+            correct++;
+
+    }
+
+    std::cout << "[INFO] - Test Results" << std::endl;
+    std::cout << "Cost: " << ((float)cost / (float)testingData.size()) << std::endl;
+    std::cout << "Accuracy: " << ((float)correct / (float)testingData.size()) << std::endl;
 
 }
 
@@ -119,6 +235,16 @@ void Network::SplitData() {
 }
 
 /*
+    void Network::DecayLearningRate(int epoch)
+    Description: Set the learning rate decayed based on the number of passed epochs.
+*/
+
+void Network::DecayLearningRate(int epoch) {
+    currentLearningRate = initialLearningRate * (1.0f / (1.0 + decayRate * epoch));
+    std::cout << "New Learning Rate: " << currentLearningRate << std::endl;
+}
+
+/*
     void Network::PrintNetworkStatus()
     Description: Prints the structure of the network to the screen.
 */
@@ -138,7 +264,7 @@ void Network::PrintNetworkStructure() {
     std::cout << "Cost Function: " << networkCost << std::endl;
     std::cout << "Weight Initializer: " << networkInitializer << std::endl;
     std::cout << "Weight Distribution: " << networkDistribution << std::endl;
-    std::cout << "Learning Rate: " << initialLearningRate << std::endl;
+    std::cout << "Learning Rate: " << currentLearningRate << std::endl;
     if(learningRateDecay)
         std::cout << "Learning Rate Decay: " << decayRate << std::endl;
     std::cout << "Epoch Count: " << totalEpochCount << std::endl;
