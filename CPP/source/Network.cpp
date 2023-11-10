@@ -117,6 +117,13 @@ void Network::Train() {
     int epochCount = 0;
     while(epochCount < totalEpochCount) {
 
+        if(epochCount > totalEpochCount - 4) {
+            currentLearningRate = 0.001f;
+            std::cout << "dropping learning rate" << std::endl;
+            learningRateDecay = false;
+        }
+
+
         /* Run epoch */
         int batchIndex = 0;
         while(batchIndex < trainingData.size() - batchSize - 1) {
@@ -140,12 +147,16 @@ void Network::Train() {
 
             NMath::PrintProgressBar(batchIndex, trainingData.size(), 50);
 
+            if(batchIndex % 15000 == 0)
+                Test(false, false);
+
         }
 
         NMath::PrintProgressBar(trainingData.size(), trainingData.size(), 50);
         std::cout << std::endl;
 
         epochCount++;
+        //std::random_shuffle(trainingData.begin(), trainingData.end());
         if(learningRateDecay)
             DecayLearningRate(epochCount);
 
@@ -160,7 +171,8 @@ void Network::Train() {
 
 void Network::Test(bool print, bool save) {
 
-    std::cout << "[INFO] - Conducting Test..." << std::endl;
+    if(print)
+        std::cout << "[INFO] - Conducting Test..." << std::endl;
 
     Matrix result = Matrix(*(layers.back()->aOutputs).get());
     Matrix oneHotVector = Matrix(*(layers.back()->aOutputs).get());
@@ -168,7 +180,7 @@ void Network::Test(bool print, bool save) {
     int correct = 0;
     float cost = 0.0f;
     int d, r, c;
-/*
+
     for(int i = 0; i < trainingData.size(); i++) {
 
         oneHotVector.Clear();
@@ -181,12 +193,17 @@ void Network::Test(bool print, bool save) {
 
     }
 
-    std::cout << "[INFO] - Train Results" << std::endl;
-    std::cout << "Cost: " << ((float)cost / (float)trainingData.size()) << std::endl;
-    std::cout << "Accuracy: " << ((float)correct / (float)trainingData.size()) << std::endl;
+    if(print) {
+        std::cout << "[INFO] - Train Results" << std::endl;
+        std::cout << "Cost: " << ((float)cost / (float)trainingData.size()) << std::endl;
+        std::cout << "Accuracy: " << ((float)correct / (float)trainingData.size()) << std::endl;
+    }
+
+    d_training_cost.push_back(((float)cost / (float)trainingData.size()));
+    d_training_accuracy.push_back(((float)correct / (float)trainingData.size()));
 
     correct = 0;
-    cost = 0.0f; */
+    cost = 0.0f; 
 
     for(int i = 0; i < testingData.size(); i++) {
 
@@ -200,9 +217,14 @@ void Network::Test(bool print, bool save) {
 
     }
 
-    std::cout << "[INFO] - Test Results" << std::endl;
-    std::cout << "Cost: " << ((float)cost / (float)testingData.size()) << std::endl;
-    std::cout << "Accuracy: " << ((float)correct / (float)testingData.size()) << std::endl;
+    if(print) {
+        std::cout << "[INFO] - Test Results" << std::endl;
+        std::cout << "Cost: " << ((float)cost / (float)testingData.size()) << std::endl;
+        std::cout << "Accuracy: " << ((float)correct / (float)testingData.size()) << std::endl;
+    }
+
+    d_testing_cost.push_back(((float)cost / (float)testingData.size()));
+    d_testing_accuracy.push_back(((float)correct / (float)testingData.size()));
 
 }
 
@@ -226,7 +248,7 @@ void Network::AddDatapoint(py::array_t<float> &datapoint, int label) {
 void Network::SplitData() {
     trainingData.clear();
     testingData.clear();
-    std::random_shuffle(data.begin(), data.end());
+    //std::random_shuffle(data.begin(), data.end());
     int splitIndex = data.size() * trainingTestingSplit;
     for(int i = 0; i < splitIndex; i++)
         trainingData.push_back(data[i]);

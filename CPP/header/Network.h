@@ -50,6 +50,13 @@ public:
 
     void DecayLearningRate(int epoch);
 
+    // Data recording
+
+    std::vector<float> d_training_cost;
+    std::vector<float> d_training_accuracy;
+    std::vector<float> d_testing_cost;
+    std::vector<float> d_testing_accuracy;
+
 private:
 
     std::vector<Datapoint> data;

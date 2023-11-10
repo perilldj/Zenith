@@ -5,11 +5,12 @@ import sys
 import time
 import numpy as np
 
+import matplotlib.pyplot as plt
+
 def main() :
 
      
     Zenith.RunTest()
-
 
     print('Loading Dataset...')
 
@@ -35,7 +36,7 @@ def main() :
 
     network = Zenith.Network()
 
-    for index, i in enumerate(x_train) :
+    for i in (x_train) :
         for index, j in enumerate(i) :
             i[index] = i[index] / 255
 
@@ -50,6 +51,8 @@ def main() :
 
     network.SetInputShape(1, 784, 1)
 
+    network.Dense(64, Zenith.EActivation.ReLU)
+    network.Dense(32, Zenith.EActivation.ReLU)
     network.Dense(10, Zenith.EActivation.Softmax)
 
     network.Cost = Zenith.ECost.CrossEntropy
@@ -57,13 +60,44 @@ def main() :
     network.Distribution = Zenith.EDistribution.Normal
 
     network.DoLearningRateDecay = True
-    network.DecayRate = 0.1
-    network.LearningRate = 0.01
-    network.Epochs = 100
-    network.BatchSize = 40
+    network.DecayRate = 0.15
+    network.LearningRate = 0.05
+    network.Epochs = 10
+    network.BatchSize = 25
 
     network.Compile()
     network.Train()
+
+    # Create a figure and subplots
+    fig, axs = plt.subplots(2, 2, figsize=(10, 8))
+
+    epochs = np.arange(0, len(network.TrainingCost))
+
+    # Plot the data on separate subplots
+    axs[0, 0].plot(epochs, network.TrainingCost, label='Training Cost')
+    axs[0, 0].set_title('Training Cost')
+    axs[0, 0].set_xlabel('Epochs')
+    axs[0, 1].plot(epochs, network.TrainingAccuracy, label='Training Accuracy', c="orange")
+    axs[0, 1].set_title('Training Accuracy')
+    axs[0, 1].set_xlabel('Epochs')
+    axs[0, 1].set_ylim(0, 1.0)
+    axs[1, 0].plot(epochs, network.TestingCost, label='Testing Cost')
+    axs[1, 0].set_title('Testing Cost')
+    axs[1, 0].set_xlabel('Epochs')
+    axs[1, 1].plot(epochs, network.TestingAccuracy, label='Testing Accuracy', c="orange")
+    axs[1, 1].set_title('Testing Accuracy')
+    axs[1, 1].set_xlabel('Epochs')
+    axs[1, 1].set_ylim(0, 1.0)
+
+    # Add legends to each subplot
+    # Set x-axis ticks to display integers only
+    for ax in axs.flat:
+        ax.set_xticks(epochs)
+        ax.set_xticklabels([str(int(e)) for e in epochs])
+
+    # Adjust layout and show the plot
+    plt.tight_layout()
+    plt.show()
 
 def unpickle(file):
     import pickle

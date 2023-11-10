@@ -51,6 +51,8 @@ public:
     inline int GetRow() const { return row; }
     inline int GetCol() const { return col; }
 
+    EDimension GetDimension();
+
     void Scale(float s);
     static void Scale(float s, Matrix &mat, Matrix &out);
 

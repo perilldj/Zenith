@@ -313,14 +313,20 @@ float Matrix::MaxElement() {
 */
 
 float Matrix::MaxElement(int &d, int &r, int &c) {
+    d = 0; r = 0; c = 0;
     float max = Get(0, 0, 0);
-    for(int i = 0; i < GetDepth(); i++)
-        for(int j = 0; j < GetRow(); j++)
-            for(int k = 0; k < GetCol(); k++)
+    for(int i = 0; i < GetDepth(); i++) {
+        for(int j = 0; j < GetRow(); j++) {
+            for(int k = 0; k < GetCol(); k++) {
                 if(Get(i, j, k) > max) {
                     max = Get(i, j, k);
-                    d = i; r = j; c = k;
+                    d = i;
+                    r = j;
+                    c = k;
                 }
+            }
+        }
+    }
     return max;
 }
 
@@ -337,6 +343,15 @@ float Matrix::MinElement() {
                 if(Get(i, j, k) < min)
                     min = Get(i, j, k);
     return min;
+}
+
+/*
+    EDimension Matrix::GetDimension()
+    Description: Returns the dimension type of the matrix.
+*/
+
+EDimension Matrix::GetDimension() {
+    return matrixDimension;
 }
 
 /*
