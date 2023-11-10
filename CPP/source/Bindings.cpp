@@ -67,6 +67,12 @@ PYBIND11_MODULE(Zenith, handle) {
         .def("Compile",         &Network::Compile)
         .def("Train",           &Network::Train)
 
+        .def_readonly("TrainingCost",        &Network::d_training_cost)
+        .def_readonly("TrainingAccuracy",    &Network::d_training_accuracy)
+        .def_readonly("TestingCost",         &Network::d_testing_cost)
+        .def_readonly("TestingAccuracy",     &Network::d_testing_accuracy)
+
+
     ;
 
     /*
