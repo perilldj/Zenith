@@ -18,6 +18,11 @@ class Matrix {
 
 public:
 
+    static const bool STANDARD_CONVOLUTION = false;
+    static const bool FULL_CONVOLUTION = true;
+
+public:
+
     Matrix(int length, bool isHorizontalVector_);
     Matrix(int row_, int col_);
     Matrix(int depth_, int row_, int col_);
@@ -40,6 +45,7 @@ public:
     void Set(int depth, int row, int col, float value);
 
     bool Empty();
+    bool IsLocationInBounds(int d, int r, int c);
 
     void Fill(float val);
     void Clear();
@@ -69,6 +75,9 @@ public:
     static std::shared_ptr<Matrix> C_EmptyProductMatrix(Matrix &mat1, Matrix &mat2);
     static void Product(Matrix &mat1, Matrix &mat2, Matrix &out);
     static void AccumulateProduct(Matrix &mat1, Matrix &mat2, Matrix &out);
+
+    static std::shared_ptr<Matrix> C_EmptyConvolutionMatrix(bool convolutionType, Matrix &in, Matrix &kernels);
+    static void Convolution(bool convolutionType, Matrix &in, Matrix &kernels, Matrix &out);
 
     static bool IsEqualSize(Matrix &mat1, Matrix &mat2);
 

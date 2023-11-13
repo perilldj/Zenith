@@ -6,8 +6,10 @@ add_subdirectory(pybind11)
 pybind11_add_module(Zenith
                         CPP/source/Bindings.cpp
                         CPP/source/Matrix.cpp
+                        CPP/source/MaxPooling.cpp
                         CPP/source/NMath.cpp
                         CPP/source/Testing.cpp
                         CPP/source/Network.cpp
                         CPP/source/Dense.cpp
+                        CPP/source/Flatten.cpp
 )

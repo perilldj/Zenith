@@ -53,7 +53,7 @@ public:
     virtual void InitializeLayer() {}
 
     virtual void Evaluate() {}
-    virtual void Backpropogation(Matrix &gradients) {}
+    virtual void Backpropagation(Matrix &gradients) {}
     virtual void ApplyGradients(float learningRate, int batchSize) {}
 
 };

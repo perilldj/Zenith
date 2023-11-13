@@ -24,7 +24,7 @@ public:
     virtual void PrintLayerInformation() override;
 
     virtual void Evaluate() override;
-    virtual void Backpropogation(Matrix &gradients) override;
+    virtual void Backpropagation(Matrix &gradients) override;
     virtual void ApplyGradients(float learningRate, int batchSize) override;
 
 };

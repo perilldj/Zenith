@@ -4,6 +4,8 @@
 
 #include "../header/Layer.h"
 #include "../header/Dense.h"
+#include "../header/MaxPooling.h"
+#include "../header/Flatten.h"
 #include "../header/Datapoint.h"
 
 namespace py = pybind11;
@@ -40,6 +42,8 @@ public:
     void Evaluate(const py::array_t<float> &data, Matrix &result);
 
     void Dense(int nodeCount, EActivation activation);
+    void MaxPooling();
+    void Flatten();
 
     void Compile();
 

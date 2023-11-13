@@ -1,4 +1,5 @@
 #include "../header/Network.h"
+#include <iomanip>
 
 Network::Network() {
 
@@ -41,6 +42,36 @@ void Network::Dense(int nodeCount, EActivation activation) {
     layer->outputCount = nodeCount;
     layers.push_back(std::static_pointer_cast<Layer, DenseLayer>(layer));
     layerTypes.push_back(ELayer::Dense);
+}
+
+/*
+    void Network::MaxPooling()
+    Description: Adds a MaxPooling layer to the network.
+*/
+
+void Network::MaxPooling() {
+    std::shared_ptr<MaxPoolingLayer> layer = std::make_shared<MaxPoolingLayer>();
+    if(layers.empty())
+        layer->isInputLayer = true;
+    else
+        layer->previousLayer = layers.back();
+    layers.push_back(std::static_pointer_cast<Layer, MaxPoolingLayer>(layer));
+    layerTypes.push_back(ELayer::MaxPooling);
+}
+
+/*
+    void Network::Flatten()
+    Description: Adds a flatten layer to the network.
+*/
+
+void Network::Flatten() {
+    std::shared_ptr<FlattenLayer> layer = std::make_shared<FlattenLayer>();
+    if(layers.empty())
+        layer->isInputLayer = true;
+    else
+        layer->previousLayer = layers.back();
+    layers.push_back(std::static_pointer_cast<Layer, FlattenLayer>(layer));
+    layerTypes.push_back(ELayer::Flatten);
 }
 
 /*
@@ -135,7 +166,7 @@ void Network::Train() {
                 oneHotVector.Set(trainingData[i].label, 1.0f);
                 Evaluate(trainingData[i].data, result);
                 NMath::CostGradient(networkCost, oneHotVector, result, costGradient);
-                layers.back()->Backpropogation(costGradient);
+                layers.back()->Backpropagation(costGradient);
 
             }
 
@@ -147,16 +178,13 @@ void Network::Train() {
 
             NMath::PrintProgressBar(batchIndex, trainingData.size(), 50);
 
-            if(batchIndex % 15000 == 0)
-                Test(false, false);
-
         }
 
         NMath::PrintProgressBar(trainingData.size(), trainingData.size(), 50);
         std::cout << std::endl;
 
         epochCount++;
-        //std::random_shuffle(trainingData.begin(), trainingData.end());
+        std::random_shuffle(trainingData.begin(), trainingData.end());
         if(learningRateDecay)
             DecayLearningRate(epochCount);
 
@@ -248,7 +276,7 @@ void Network::AddDatapoint(py::array_t<float> &datapoint, int label) {
 void Network::SplitData() {
     trainingData.clear();
     testingData.clear();
-    //std::random_shuffle(data.begin(), data.end());
+    std::random_shuffle(data.begin(), data.end());
     int splitIndex = data.size() * trainingTestingSplit;
     for(int i = 0; i < splitIndex; i++)
         trainingData.push_back(data[i]);
@@ -272,17 +300,22 @@ void Network::DecayLearningRate(int epoch) {
 */
 
 void Network::PrintNetworkStructure() {
-    std::cout << "--------------- NETWORK STRUCTURE ---------------" << std::endl;
-    std::cout << "Layer Type         Activation        Param Count " << std::endl;
-    std::cout << "Input              N/A               0" << std::endl;
+    std::stringstream ss;
+    ss << "(" << inputChannels << ", " << inputHeight << ", " << inputWidth << ")";
+    std::cout << "------------------------ NETWORK STRUCTURE ------------------------" << std::endl;
+    std::cout << "Layer Type         Shape             Activation        Param Count " << std::endl;
+    std::cout << std::left << std::setw(19) << "Input" 
+              << std::setw(18) << ss.str()
+              << std::setw(18) << "N/A" 
+              << std::setw(18) << '0' << std::endl;
     int count = 0;
     for(int i = 0; i < layers.size(); i++) {
         layers[i]->PrintLayerInformation();
         count += layers[i]->GetParameterCount();
     }
-    std::cout << "-------------------------------------------------" << std::endl;
+    std::cout << "-------------------------------------------------------------------" << std::endl;
     std::cout << "Total Parameter Count:  " << count << std::endl;
-    std::cout << "-------------------------------------------------" << std::endl;
+    std::cout << "-------------------------------------------------------------------" << std::endl;
     std::cout << "Cost Function: " << networkCost << std::endl;
     std::cout << "Weight Initializer: " << networkInitializer << std::endl;
     std::cout << "Weight Distribution: " << networkDistribution << std::endl;
@@ -292,6 +325,6 @@ void Network::PrintNetworkStructure() {
     std::cout << "Epoch Count: " << totalEpochCount << std::endl;
     std::cout << "Minibatch Size: " << batchSize << std::endl;
     std::cout << "Training Testing Split: " << trainingTestingSplit << std::endl;
-    std::cout << "-------------------------------------------------" << std::endl;
+    std::cout << "-------------------------------------------------------------------" << std::endl;
 }
 

@@ -62,6 +62,9 @@ PYBIND11_MODULE(Zenith, handle) {
         .def_readwrite("Distribution",          &Network::networkDistribution)
 
         .def("Dense",           &Network::Dense)
+        .def("MaxPooling",      &Network::MaxPooling)
+        .def("Flatten",         &Network::Flatten)
+
         .def("AddDatapoint",    &Network::AddDatapoint)
         .def("SetInputShape",   &Network::SetInputShape)
         .def("Compile",         &Network::Compile)
@@ -71,7 +74,6 @@ PYBIND11_MODULE(Zenith, handle) {
         .def_readonly("TrainingAccuracy",    &Network::d_training_accuracy)
         .def_readonly("TestingCost",         &Network::d_testing_cost)
         .def_readonly("TestingAccuracy",     &Network::d_testing_accuracy)
-
 
     ;
 

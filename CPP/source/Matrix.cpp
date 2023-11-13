@@ -40,6 +40,8 @@ Matrix::Matrix(int row_, int col_) :
     arr[0].resize(row);
     for(int i = 0; i < row; i++)
         arr[0][i].resize(col);
+    if(row_ == 1 || col_ == 1)
+        matrixDimension = ONE_DIMENSIONAL;
 }
 
 /*
@@ -57,6 +59,14 @@ Matrix::Matrix(int depth_, int row_, int col_) :
         for(int j = 0; j < row; j++)
             arr[i][j].resize(col);
     }
+    int dimensionCount = 3;
+    if(depth_ == 1)
+        dimensionCount--;
+    if(row_ == 1)
+        dimensionCount--;
+    if(col_ == 1)
+        dimensionCount--;
+    matrixDimension = (EDimension)dimensionCount;
 }
 
 /*
@@ -267,8 +277,25 @@ void Matrix::Set(int depth, int row, int col, float value) {
 
 }
 
+/*
+    bool Matrix::Empty()
+    Description: Returns true the matrix isn't initialized in any shape or form.
+*/
+
 bool Matrix::Empty() {
     return (depth == 0 || row == 0 || col == 0);
+}
+
+/*
+    bool Matrix::IsLocationInBounds(int d, int r, int c)
+    Description: Returns true of the provided indices are within the bounds of
+                 the matrix, returns false otherwise.
+*/
+
+bool Matrix::IsLocationInBounds(int d, int r, int c) {
+    return ( d >= 0 && d < depth &&
+             c >= 0 && c < col &&
+             r >= 0 && r < row );
 }
 
 /*
@@ -611,6 +638,49 @@ void Matrix::AccumulateProduct(Matrix &mat1, Matrix &mat2, Matrix &out) {
             out.Set(i, j, out.Get(i, j) + result);
         }
     }
+
+}
+
+/*
+    std::shared_ptr<Matrix> Matrix::C_EmptyConvolutionMatrix(bool convolutionType, Matrix &in, Matrix &kernels)
+    Description: Creates a matrix that will be properly sized to perform the convolution function of the
+                 with the given convolution type, data size, and kernel size.
+*/
+
+std::shared_ptr<Matrix> Matrix::C_EmptyConvolutionMatrix(bool convolutionType, Matrix &in, Matrix &kernels) {
+
+    if(kernels.GetRow() != kernels.GetCol())
+        return std::shared_ptr<Matrix>();
+
+    if(kernels.GetRow() > in.GetRow() || kernels.GetCol() > in.GetCol())
+        return std::shared_ptr<Matrix>();
+
+    int kernelSize = kernels.GetRow();
+    int depth, row, col;
+    depth = in.GetDepth() * kernels.GetDepth();
+    if(convolutionType == STANDARD_CONVOLUTION) {
+        row = in.GetRow() - kernelSize + 1;
+        col = in.GetCol() - kernelSize + 1;
+    } else {
+        row = in.GetRow() + kernelSize - 1;
+        col = in.GetCol() + kernelSize - 1;
+    }
+
+    return std::make_shared<Matrix>(depth, row, col);
+
+}
+
+/*
+    void Matrix::Convolution(bool convolutionType, Matrix &in, Matrix &kernels, Matrix &out)
+    Description: Performs convolution given a matrix of images, and a matrix of kernels.
+                 The output will also be a matrix containing in.depth * kernels.depth images.
+                 Essentially, the number of input images times the number of kernels.
+
+    NOTE: The output matrix shape varies based on the input, use C_EmptyConvolutionMatrix to
+    create a properly sized matrix for the operation you want to perform.
+*/
+
+void Matrix::Convolution(bool convolutionType, Matrix &in, Matrix &kernels, Matrix &out) {
 
 }
 

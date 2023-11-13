@@ -1,9 +1,7 @@
 #include "../header/Dense.h"
 #include <iomanip>
 
-DenseLayer::DenseLayer() {
-
-}
+DenseLayer::DenseLayer() { }
 
 /*
     void DenseLayer::InitializeLayer()
@@ -58,7 +56,11 @@ int DenseLayer::GetParameterCount() {
 */
 
 void DenseLayer::PrintLayerInformation() {
-    std::cout << std::left << std::setw(19) << "Dense" << std::setw(18) << activation 
+    std::stringstream ss;
+    ss << "(" << outputChannels << ", " << outputHeight << ", " << outputWidth << ")";
+    std::cout << std::left << std::setw(19) << "Dense" 
+                           << std::setw(18) << ss.str()
+                           << std::setw(18) << activation 
                            << std::setw(18) << GetParameterCount() << std::endl;
 }
 
@@ -81,12 +83,12 @@ void DenseLayer::Evaluate() {
 }
 
 /*
-    void DenseLayer::Backpropogation(Matrix &gradients)
+    void DenseLayer::Backpropagation(Matrix &gradients)
     Description: Calculates the gradients based on the provided change of cost
                  with respect to the activation output.
 */
 
-void DenseLayer::Backpropogation(Matrix &gradients) {
+void DenseLayer::Backpropagation(Matrix &gradients) {
     
     /* Calculate the change of cost with respect to the pre-activation output. */
     Matrix dCdz = Matrix(gradients.GetRow(), false);
@@ -110,13 +112,13 @@ void DenseLayer::Backpropogation(Matrix &gradients) {
         return;
 
     /* Multiplying the transpose of the weight matrix by the dCdz matrix results
-       in the activation gradients for the previous layer to continue backpropogation. */
+       in the activation gradients for the previous layer to continue backpropagation. */
     Matrix::Transpose(*weights.get(), *weightsTranspose.get());
     Matrix::Product(*weightsTranspose.get(), dCdz, *g_Activations.get());
 
-    /* Continue backpropogation to the previous layer. */
+    /* Continue backpropagation to the previous layer. */
     if(previousLayer)
-        previousLayer->Backpropogation(*g_Activations.get());
+        previousLayer->Backpropagation(*g_Activations.get());
 
 }
 
