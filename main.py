@@ -49,10 +49,11 @@ def main() :
     for i, j in enumerate(x_test) :
         network.AddDatapoint(x_test[i], y_test[i])
 
-    network.SetInputShape(1, 28, 28)
+    network.SetInputShape(1, 784, 1)
 
+    #network.Flatten()
     #network.MaxPooling()
-    network.Flatten()
+    #network.MaxPooling()
     network.Dense(64, Zenith.EActivation.ReLU)
     network.Dense(10, Zenith.EActivation.Softmax)
 
@@ -63,7 +64,7 @@ def main() :
     network.DoLearningRateDecay = True
     network.DecayRate = 0.15
     network.LearningRate = 0.05
-    network.Epochs = 10
+    network.Epochs = 5
     network.BatchSize = 25
 
     network.Compile()

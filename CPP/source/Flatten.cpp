@@ -57,7 +57,7 @@ void FlattenLayer::PrintLayerInformation() {
 
 void FlattenLayer::Evaluate() {
 
-    if(isInputLayer)
+    if(!isInputLayer)
         FlattenMatrix(*(previousLayer->aOutputs).get(), *aOutputs.get());
     else
         FlattenMatrix(*dataIn.get(), *aOutputs.get());
@@ -109,9 +109,9 @@ void FlattenLayer::FlattenMatrix(Matrix &mat, Matrix &out) {
 void FlattenLayer::RebuildMatrix(Matrix &mat, Matrix &out) {
 
     int index = 0;
-    for(int i = 0; i < mat.GetDepth(); i++)
-        for(int j = 0; j < mat.GetRow(); j++)
-            for(int k = 0; k < mat.GetCol(); k++) {
+    for(int i = 0; i < out.GetDepth(); i++)
+        for(int j = 0; j < out.GetRow(); j++)
+            for(int k = 0; k < out.GetCol(); k++) {
                 out.Set(i, j, k, mat.Get(index));
                 index++;
             }
