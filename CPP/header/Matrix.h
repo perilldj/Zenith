@@ -77,12 +77,13 @@ public:
     static void AccumulateProduct(Matrix &mat1, Matrix &mat2, Matrix &out);
 
     static std::shared_ptr<Matrix> C_EmptyConvolutionMatrix(bool convolutionType, Matrix &in, Matrix &kernels);
-    static void Convolution(bool convolutionType, Matrix &in, Matrix &kernels, Matrix &out);
+    static void Convolution(bool convolutionType, Matrix &in, Matrix &kernel, Matrix &out, int outputChannel);
 
     static bool IsEqualSize(Matrix &mat1, Matrix &mat2);
 
 private:
 
+    static float ConvolveIndex(int rowIndex, int colIndex, Matrix &in, Matrix &kernel);
     bool CheckDimension(EDimension targetDimension);
     //void ResizeVector(int row, int col); ???
 

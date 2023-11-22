@@ -45,6 +45,24 @@ void Network::Dense(int nodeCount, EActivation activation) {
 }
 
 /*
+    void Network::Conv2D(int kernelSize, int kernelCount, EActivation activation)
+    Description: Adds a two-dimensional convolutional layer to the network.
+*/
+
+void Network::Conv2D(int kernelSize, int kernelCount, EActivation activation) {
+    std::shared_ptr<Conv2DLayer> layer = std::make_shared<Conv2DLayer>();
+    if(layers.empty())
+        layer->isInputLayer = true;
+    else
+        layer->previousLayer = layers.back();
+    layer->activation = activation;
+    layer->kernelSize = kernelSize;
+    layer->kernelCount = kernelCount;
+    layers.push_back(std::static_pointer_cast<Layer, Conv2DLayer>(layer));
+    layerTypes.push_back(ELayer::Conv2D);
+}
+
+/*
     void Network::MaxPooling()
     Description: Adds a MaxPooling layer to the network.
 */

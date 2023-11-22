@@ -28,9 +28,10 @@ void NMath::dCdz(ECost cost, EActivation activation, bool isOutputLayer, Matrix 
 */
 
 void NMath::EvaluateFunctionOverMatrix(float (*func)(const float&), Matrix &mat, Matrix &out) {
-    for(int i = 0; i < mat.GetRow(); i++)
-        for(int j = 0; j < mat.GetCol(); j++)
-            out.Set(i, j, func(mat.Get(i, j)));
+    for(int i = 0; i < mat.GetDepth(); i++)
+        for(int j = 0; j < mat.GetRow(); j++)
+            for(int k = 0; k < mat.GetCol(); k++)
+                out.Set(i, j, k, func(mat.Get(i, j, k)));
 }
 
 /*

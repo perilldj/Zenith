@@ -85,7 +85,7 @@ std::shared_ptr<Matrix> Matrix::CreateMatrix(Matrix &m, bool copyElements) {
 }
 
 /*
-    std::shared_tr<Matrix> Matrix::CreateMatrix(int row, int isHorizontalVector)
+    std::shared_ptr<Matrix> Matrix::CreateMatrix(int row, int isHorizontalVector)
     Description: Creates a matrix with the specified matrix row and orientation.
 */
 
@@ -95,7 +95,7 @@ std::shared_ptr<Matrix> Matrix::CreateMatrix(int length, bool isHorizontalVector
 
 
 /*
-    std::shared_tr<Matrix> Matrix::CreateMatrix(int row, int col)
+    std::shared_ptr<Matrix> Matrix::CreateMatrix(int row, int col)
     Description: Creates a matrix with the specified matrix row and col size.
 */
 
@@ -104,7 +104,7 @@ std::shared_ptr<Matrix> Matrix::CreateMatrix(int row, int col) {
 }
 
 /*
-    std::shared_tr<Matrix> Matrix::CreateMatrix(int depth, int row, int col)
+    std::shared_ptr<Matrix> Matrix::CreateMatrix(int depth, int row, int col)
     Description: Creates a matrix with the specified matrix row, col, and depth size.
 */
 
@@ -347,9 +347,7 @@ float Matrix::MaxElement(int &d, int &r, int &c) {
             for(int k = 0; k < GetCol(); k++) {
                 if(Get(i, j, k) > max) {
                     max = Get(i, j, k);
-                    d = i;
-                    r = j;
-                    c = k;
+                    d = i; r = j; c = k;
                 }
             }
         }
@@ -645,9 +643,13 @@ void Matrix::AccumulateProduct(Matrix &mat1, Matrix &mat2, Matrix &out) {
     std::shared_ptr<Matrix> Matrix::C_EmptyConvolutionMatrix(bool convolutionType, Matrix &in, Matrix &kernels)
     Description: Creates a matrix that will be properly sized to perform the convolution function of the
                  with the given convolution type, data size, and kernel size.
+
+    NOTE: CURRENTLY INCORRECT. DO NOT USE.
 */
 
 std::shared_ptr<Matrix> Matrix::C_EmptyConvolutionMatrix(bool convolutionType, Matrix &in, Matrix &kernels) {
+
+    std::cout << "C_EmptyConvolutionMatrix is incorrect. Do not use." << std::endl;
 
     if(kernels.GetRow() != kernels.GetCol())
         return std::shared_ptr<Matrix>();
@@ -680,7 +682,29 @@ std::shared_ptr<Matrix> Matrix::C_EmptyConvolutionMatrix(bool convolutionType, M
     create a properly sized matrix for the operation you want to perform.
 */
 
-void Matrix::Convolution(bool convolutionType, Matrix &in, Matrix &kernels, Matrix &out) {
+void Matrix::Convolution(bool convolutionType, Matrix &in, Matrix &kernels, Matrix &out, int outputChannel) {
+
+    if(in.GetDepth() != kernels.GetDepth()) {
+        std::cout << "[ERROR] - Convoltuion - in.GetDepth() != kernels.GetDepth()" << std::endl;
+        return;
+    }
+
+    int startRow, startCol;
+    int endRow, endCol;
+    int kernelSize = kernels.GetRow();
+    int inputChannels = in.GetDepth();
+
+    if(convolutionType == STANDARD_CONVOLUTION)
+        startRow = startCol = 0;
+    else
+        startRow = startCol = -((kernelSize % 2) + 1);
+
+    endRow = endCol = out.GetCol() + startRow;
+
+    for(int i = startRow; i < endRow; i++)
+        for(int j = startCol; j < endCol; j++)
+            out.Set(outputChannel, i, j, 
+                    ConvolveIndex(i, j, in, kernels) + out.Get(outputChannel, i, j));
 
 }
 
@@ -691,6 +715,29 @@ void Matrix::Convolution(bool convolutionType, Matrix &in, Matrix &kernels, Matr
 
 bool Matrix::IsEqualSize(Matrix &mat1, Matrix &mat2) {
     return (mat1.depth == mat2.depth && mat1.row == mat2.row && mat1.col == mat2.col);
+}
+
+/*
+    float Matrix::ConvolveIndex(int rowIndex, int colIndex, int channel, int kernelChannel,
+                                Matrix &in, Matrix &kernels);
+    Description: Calculates the resulting value from the kernel location and returns it.
+*/
+
+float Matrix::ConvolveIndex(int rowIndex, int colIndex, Matrix &in, Matrix &kernel) {
+
+    int kernelSize = kernel.GetRow();
+    int depth = in.GetDepth();
+    float result = 0.0f;
+    for(int i = rowIndex; i < rowIndex + kernelSize; i++)
+        for(int j = colIndex; j < colIndex + kernelSize; j++) {
+            if(i < 0 || i >= in.GetRow() || j < 0 || j >= in.GetCol())
+                continue;
+            for(int k = 0; k < depth; k++)
+                result += in.Get(depth, i, j) * kernel.Get(depth, i - rowIndex, j - colIndex);
+        }
+
+    return result;
+
 }
 
 /*

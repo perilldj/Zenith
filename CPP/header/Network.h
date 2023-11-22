@@ -4,6 +4,7 @@
 
 #include "../header/Layer.h"
 #include "../header/Dense.h"
+#include "../header/Conv2D.h"
 #include "../header/MaxPooling.h"
 #include "../header/Flatten.h"
 #include "../header/Datapoint.h"
@@ -42,6 +43,7 @@ public:
     void Evaluate(const py::array_t<float> &data, Matrix &result);
 
     void Dense(int nodeCount, EActivation activation);
+    void Conv2D(int kernelSize, int kernelCount, EActivation activation);
     void MaxPooling();
     void Flatten();
 

@@ -49,12 +49,14 @@ def main() :
     for i, j in enumerate(x_test) :
         network.AddDatapoint(x_test[i], y_test[i])
 
-    network.SetInputShape(1, 784, 1)
+    network.SetInputShape(1, 28, 28)
 
-    #network.Flatten()
-    #network.MaxPooling()
-    #network.MaxPooling()
-    network.Dense(64, Zenith.EActivation.ReLU)
+    network.Conv2D(3, 2, Zenith.EActivation.ReLU)
+    network.MaxPooling()
+    network.Conv2D(3, 3, Zenith.EActivation.ReLU)
+    network.MaxPooling()
+    network.Flatten()
+    network.Dense(128, Zenith.EActivation.ReLU)
     network.Dense(10, Zenith.EActivation.Softmax)
 
     network.Cost = Zenith.ECost.CrossEntropy

@@ -12,4 +12,5 @@ pybind11_add_module(Zenith
                         CPP/source/Network.cpp
                         CPP/source/Dense.cpp
                         CPP/source/Flatten.cpp
+                        CPP/source/Conv2D.cpp
 )

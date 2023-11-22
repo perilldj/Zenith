@@ -62,6 +62,7 @@ PYBIND11_MODULE(Zenith, handle) {
         .def_readwrite("Distribution",          &Network::networkDistribution)
 
         .def("Dense",           &Network::Dense)
+        .def("Conv2D",          &Network::Conv2D)
         .def("MaxPooling",      &Network::MaxPooling)
         .def("Flatten",         &Network::Flatten)
 
@@ -76,43 +77,5 @@ PYBIND11_MODULE(Zenith, handle) {
         .def_readonly("TestingAccuracy",     &Network::d_testing_accuracy)
 
     ;
-
-    /*
-    
-        py::class_<Network> ( handle, "Network" )
-    
-        .def(py::init<>())
-
-        .def_readwrite("InterEpochTracking", &Network::interEpochTracking)
-        .def_readwrite("LearningRateDecay",  &Network::learningRateDecay)
-
-        .def_readonly("train_cost", &Network::train_cost)
-        .def_readonly("train_average", &Network::train_average)
-        .def_readonly("test_cost", &Network::test_cost)
-        .def_readonly("test_average", &Network::test_average)
-
-        .def_readwrite("BatchSize",     &Network::batchSize)
-        .def_readwrite("Epochs",        &Network::epochs)
-        .def_readwrite("LearningRate",  &Network::learningRate)
-        .def_readwrite("DecayRate",     &Network::decayRate)
-
-        .def_readwrite("Cost",          &Network::networkCost)
-        .def_readwrite("Initializer",   &Network::initializer)
-        .def_readwrite("Distribution",  &Network::distribution)
-
-        .def("TrainNetwork",           &Network::TrainNetwork)
-        .def("TestNetwork",            &Network::TestNetwork)
-        .def("Evaluate",               &Network::Evaluate)
-        .def("AddTrainingDatapoint",   &Network::AddTrainingDatapoint)
-        .def("AddTestingDatapoint",    &Network::AddTestingDatapoint)
-        .def("Dense",                  &Network::Dense)
-        .def("Conv2D",                 &Network::Conv2D)
-        .def("MaxPooling",             &Network::MaxPooling)
-        .def("DefineInputShape",       &Network::DefineInputShape)
-        .def("Compile",                &Network::Compile)
-
-    ;
-
-    */
 
 }
